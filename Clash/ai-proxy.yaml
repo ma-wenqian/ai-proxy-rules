@@ -1,0 +1,56 @@
+# AI Proxy Rules — OpenAI + Claude
+# Clash / mihomo rule-provider, behavior: classical
+# Use this single file when both services share the same node; use
+# openai.yaml and claude.yaml if you want to route them separately.
+#
+# 两家共用同一个节点时用这一个文件即可；需要分别指定节点请改用
+# openai.yaml 与 claude.yaml
+#
+# https://github.com/ma-wenqian/ai-proxy-rules
+
+payload:
+  # ===== OpenAI / ChatGPT / Sora =====
+  # Site, API, static assets / 主站、API、静态资源
+  - DOMAIN-SUFFIX,openai.com
+  - DOMAIN-SUFFIX,chatgpt.com
+  - DOMAIN-SUFFIX,oaistatic.com
+  - DOMAIN-SUFFIX,oaiusercontent.com
+  - DOMAIN-SUFFIX,sora.com
+  - DOMAIN-SUFFIX,openai.com.cdn.cloudflare.net
+
+  # Object storage & CDN origin / 对象存储与 CDN 回源
+  - DOMAIN-SUFFIX,openaiapi-site.azureedge.net
+  - DOMAIN-SUFFIX,openaicom.imgix.net
+  - DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net
+  - DOMAIN,production-openaicom-storage.azureedge.net
+  - DOMAIN,openaicomproductionae4b.blob.core.windows.net
+
+  # Login & CAPTCHA / 登录与人机验证
+  - DOMAIN,cdn.auth0.com
+  - DOMAIN,client-api.arkoselabs.com
+  - DOMAIN,openai-api.arkoselabs.com
+
+  # ChatGPT advanced voice, LiveKit hosts are assigned dynamically
+  # ChatGPT 高级语音，LiveKit 主机名动态分配
+  - DOMAIN-SUFFIX,livekit.cloud
+
+  # ===== Anthropic / Claude / Claude Code =====
+  # API — used by Claude Code, the SDKs and third-party clients
+  # API：Claude Code、SDK、第三方客户端都走这里
+  - DOMAIN,api.anthropic.com
+
+  # Site, console, docs, login / 主站、控制台、文档、登录
+  - DOMAIN-SUFFIX,anthropic.com
+  - DOMAIN-SUFFIX,claude.ai
+  - DOMAIN-SUFFIX,claude.com
+
+  # Uploads and the Artifacts sandbox / 用户上传与 Artifacts 沙箱
+  - DOMAIN-SUFFIX,claudeusercontent.com
+
+  # Analytics. Not required, but the web app can hang on load without it.
+  # Segment is a shared analytics service — drop these two lines if you would
+  # rather not route other sites' telemetry through the proxy.
+  # 埋点上报。不走代理不影响使用，但网页端偶尔会卡在加载态。
+  # segment 是通用分析服务，不想让其它站点的埋点也走代理就删掉这两行。
+  - DOMAIN-SUFFIX,segment.io
+  - DOMAIN-SUFFIX,segment.com

@@ -1,0 +1,83 @@
+# Clash / mihomo integration example
+#
+# This shows how to wire the rule sets in — it is not a drop-in config.
+# Merge the three sections below into your own config and use the nodes
+# from your own subscription.
+#
+# 这是一份「怎么用」的示例，不是可以直接导入的完整配置。
+# 请把 rule-providers / proxy-groups / rules 三段合并到你自己的配置里，
+# proxies 用你自己订阅里的节点。
+#
+# https://github.com/ma-wenqian/ai-proxy-rules
+
+# ---------------------------------------------------------------
+# 1. Rule sets / 规则集
+# ---------------------------------------------------------------
+rule-providers:
+  # Option A — both services share one node, this is all you need
+  # 方案 A：OpenAI 和 Claude 走同一个节点，只需要这一个
+  ai-proxy:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Clash/ai-proxy.yaml"
+    path: ./ruleset/ai-proxy.yaml
+
+  # Option B — route them separately (then drop ai-proxy above)
+  # 方案 B：两家分别指定节点，用下面这两个（并删掉上面的 ai-proxy）
+  openai:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Clash/openai.yaml"
+    path: ./ruleset/openai.yaml
+
+  claude:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Clash/claude.yaml"
+    path: ./ruleset/claude.yaml
+
+# ---------------------------------------------------------------
+# 2. Proxy groups / 策略组
+#    Both providers are strict about datacenter IPs. Prefer a residential
+#    node, and avoid load balancing — switching exit IP mid-session drops
+#    your login state.
+#    两家对机房 IP 的风控都比较严，建议选原生住宅/家宽节点；不要用负载均衡，
+#    同一会话中途换出口 IP 会掉登录态。
+# ---------------------------------------------------------------
+proxy-groups:
+  - name: AI
+    type: select
+    proxies:
+      - your-node-name-here   # 替换成你自己的节点名
+      - DIRECT
+
+  # Only needed for option B / 方案 B 时再加一组
+  - name: Claude
+    type: select
+    proxies:
+      - your-node-name-here   # 替换成你自己的节点名
+      - DIRECT
+
+# ---------------------------------------------------------------
+# 3. Rules / 规则
+#    Must come BEFORE catch-alls like GEOIP,CN and MATCH, otherwise they
+#    will never be reached.
+#    必须放在 GEOIP,CN / MATCH 等兜底规则「之前」，否则不会命中。
+# ---------------------------------------------------------------
+rules:
+  # Option A / 方案 A
+  - RULE-SET,ai-proxy,AI
+
+  # Option B — pick one or the other / 方案 B（与上面那条二选一）
+  # - RULE-SET,openai,AI
+  # - RULE-SET,claude,Claude
+
+  # ... your existing rules ... / …… 你原有的其它规则 ……
+  - GEOIP,CN,DIRECT
+  - MATCH,AI

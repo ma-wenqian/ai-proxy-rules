@@ -1,0 +1,24 @@
+# AI Proxy Rules — Anthropic / Claude / Claude Code
+# Clash / mihomo rule-provider, behavior: classical
+# https://github.com/ma-wenqian/ai-proxy-rules
+
+payload:
+  # API — used by Claude Code, the SDKs and third-party clients
+  # API：Claude Code、SDK、第三方客户端都走这里
+  - DOMAIN,api.anthropic.com
+
+  # Site, console, docs, login / 主站、控制台、文档、登录
+  - DOMAIN-SUFFIX,anthropic.com
+  - DOMAIN-SUFFIX,claude.ai
+  - DOMAIN-SUFFIX,claude.com
+
+  # Uploads and the Artifacts sandbox / 用户上传与 Artifacts 沙箱
+  - DOMAIN-SUFFIX,claudeusercontent.com
+
+  # Analytics. Not required, but the web app can hang on load without it.
+  # Segment is a shared analytics service — drop these two lines if you would
+  # rather not route other sites' telemetry through the proxy.
+  # 埋点上报。不走代理不影响使用，但网页端偶尔会卡在加载态。
+  # segment 是通用分析服务，不想让其它站点的埋点也走代理就删掉这两行。
+  - DOMAIN-SUFFIX,segment.io
+  - DOMAIN-SUFFIX,segment.com
