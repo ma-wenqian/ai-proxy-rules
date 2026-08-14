@@ -38,25 +38,26 @@ standalone configs — see below.
 
 ## Shadowrocket
 
-Open one of these links **on the iOS device** and Shadowrocket will import the
-config automatically.
+Tap one of the install links **on the iOS device** and Shadowrocket will import
+the config automatically. If the link doesn't open, copy the URL below it and
+add it by hand: Shadowrocket → **Config** → **+** → paste the URL.
 
-OpenAI + Claude:
-
-```
-shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf
-```
-
-OpenAI only:
+**OpenAI + Claude** — [install](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf)
 
 ```
-shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf
+https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf
 ```
 
-Claude only:
+**OpenAI only** — [install](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf)
 
 ```
-shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf
+https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf
+```
+
+**Claude only** — [install](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf)
+
+```
+https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf
 ```
 
 **These configs contain no servers.** Servers live in Shadowrocket's own list,
@@ -216,24 +217,25 @@ Shadowrocket/
 
 ## Shadowrocket
 
-**在 iOS 设备上**点击下面的链接，Shadowrocket 会自动跳转并导入配置。
+**在 iOS 设备上**点击「一键安装」，Shadowrocket 会自动跳转并导入配置。
+如果链接打不开，复制下面的地址手动添加：Shadowrocket →**配置**→ 右上角 **+** → 粘贴地址。
 
-OpenAI + Claude：
-
-```
-shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf
-```
-
-只要 OpenAI：
+**OpenAI + Claude** —— [一键安装](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf)
 
 ```
-shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf
+https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf
 ```
 
-只要 Claude：
+**只要 OpenAI** —— [一键安装](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf)
 
 ```
-shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf
+https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf
+```
+
+**只要 Claude** —— [一键安装](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf)
+
+```
+https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf
 ```
 
 **配置里不含任何节点。** 节点在 Shadowrocket 自己的服务器列表里，`PROXY` 表示当前选中的那个，
