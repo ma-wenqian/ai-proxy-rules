@@ -1,5 +1,8 @@
 # AI Proxy Rules — OpenAI / ChatGPT / Sora
 # Clash / mihomo rule-provider, behavior: classical
+#
+# Generated from rules/*.list by scripts/build.sh — do not edit by hand.
+# 由 scripts/build.sh 从 rules/*.list 生成，请勿手改。
 # https://github.com/ma-wenqian/ai-proxy-rules
 
 payload:

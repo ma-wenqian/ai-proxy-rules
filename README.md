@@ -16,27 +16,45 @@ you don't have to turn on global mode just to reach `api.anthropic.com`.
 | **OpenAI** | ChatGPT web & desktop, `api.openai.com`, platform console, Sora, login + Arkose CAPTCHA, advanced voice (LiveKit) |
 | **Anthropic** | Claude web app, `api.anthropic.com` (Claude Code / SDKs), console, Artifacts / MCP Apps sandboxes, file uploads, `clau.de` short links, `claude.dev`, Anthropic IP blocks (AS399358) |
 
-Every entry is commented with what it's for — see [Clash/ai-proxy.yaml](Clash/ai-proxy.yaml).
+Every entry is commented with what it's for — see [rules/claude.list](rules/claude.list)
+and [rules/openai.list](rules/openai.list).
 
 ## Layout
 
 ```
-Clash/
+rules/                  # source of truth, edited by hand
+  openai.list           # also usable directly as a RULE-SET
+  claude.list
+Clash/                  # generated, except example-config.yaml
   ai-proxy.yaml         # OpenAI + Claude, one node for both
   openai.yaml           # OpenAI only
   claude.yaml           # Claude only
   example-config.yaml   # how to wire it up: rule-providers / proxy-groups / rules
-Shadowrocket/
+Shadowrocket/           # generated
   ai-proxy.conf         # OpenAI + Claude
   openai.conf           # OpenAI only
   claude.conf           # Claude only
+scripts/build.sh        # rules/*.list -> Clash/ + Shadowrocket/
 ```
 
+`rules/*.list` are RULE-SET files for Shadowrocket, Surge, Loon and Stash.
 `Clash/*.yaml` are `behavior: classical` rule-provider files (a `payload:` list)
 meant to be merged into your existing config. `Shadowrocket/*.conf` are
 standalone configs — see below.
 
-## Shadowrocket
+## Shadowrocket / Surge / Loon — RULE-SET
+
+If you already have your own config, add the rule sets to it instead of
+switching configs. Put these lines above your `FINAL` rule:
+
+```
+RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/openai.list,PROXY
+RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/claude.list,PROXY
+```
+
+Replace `PROXY` with a policy group of your own if you want a dedicated node.
+
+## Shadowrocket — standalone config
 
 Tap one of the install links **on the iOS device** and Shadowrocket will import
 the config automatically. If the link doesn't open, copy the URL below it and
@@ -158,6 +176,17 @@ installs. Matching on domains is more precise.
 CAPTCHAs or refuse outright. Prefer a residential node, and don't put these
 rules behind load balancing — changing exit IP mid-session drops your login.
 
+## Editing the rules
+
+Only edit `rules/*.list`, then regenerate:
+
+```bash
+bash scripts/build.sh
+```
+
+Commit the `.list` change together with the regenerated files. CI runs
+`bash scripts/build.sh --check` and fails if they are out of sync.
+
 ## Scope
 
 Currently OpenAI and Anthropic only. More services may be added later. Intended
@@ -196,26 +225,43 @@ you live.
 | **OpenAI** | ChatGPT 网页与桌面端、`api.openai.com`、platform 控制台、Sora、登录与 Arkose 人机验证、高级语音（LiveKit） |
 | **Anthropic** | Claude 网页端、`api.anthropic.com`（Claude Code / SDK）、console 控制台、Artifacts / MCP Apps 沙箱、文件上传、`clau.de` 短链、`claude.dev`、Anthropic 自有 IP 段（AS399358） |
 
-每条规则都带用途注释，域名清单见 [Clash/ai-proxy.yaml](Clash/ai-proxy.yaml)。
+每条规则都带用途注释，域名清单见 [rules/claude.list](rules/claude.list) 与
+[rules/openai.list](rules/openai.list)。
 
 ## 目录结构
 
 ```
-Clash/
+rules/                  # 规则源文件，只手改这里
+  openai.list           # 也可直接作为 RULE-SET 使用
+  claude.list
+Clash/                  # 脚本生成（example-config.yaml 除外）
   ai-proxy.yaml         # OpenAI + Claude 合集，两家共用一个节点时用这个
   openai.yaml           # 仅 OpenAI
   claude.yaml           # 仅 Claude
   example-config.yaml   # 接入示例：rule-providers / proxy-groups / rules
-Shadowrocket/
+Shadowrocket/           # 脚本生成
   ai-proxy.conf         # OpenAI + Claude 合集
   openai.conf           # 仅 OpenAI
   claude.conf           # 仅 Claude
+scripts/build.sh        # rules/*.list -> Clash/ + Shadowrocket/
 ```
 
+`rules/*.list` 是 Shadowrocket、Surge、Loon、Stash 通用的 RULE-SET 文件；
 `Clash/*.yaml` 是 `behavior: classical` 的 rule-provider 文件（`payload:` 列表），
 合并进你现有的配置使用；`Shadowrocket/*.conf` 是独立配置，见下文。
 
-## Shadowrocket
+## Shadowrocket / Surge / Loon —— RULE-SET
+
+已经有自己的配置的话，不用整份切换，把规则集加进去即可。放在 `FINAL` 之前：
+
+```
+RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/openai.list,PROXY
+RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/claude.list,PROXY
+```
+
+想给 AI 单独指定节点，把 `PROXY` 换成你自己的策略组名。
+
+## Shadowrocket —— 独立配置
 
 **在 iOS 设备上**点击「一键安装」，Shadowrocket 会自动跳转并导入配置。
 如果链接打不开，复制下面的地址手动添加：Shadowrocket →**配置**→ 右上角 **+** → 粘贴地址。
@@ -326,6 +372,17 @@ Claude Code 跑在 Node 之上，`PROCESS-NAME,node` 会把机器上所有 Node 
 
 **节点选择**：两家对机房 IP 的风控都比较严，容易触发验证码或直接拒绝，
 建议选原生住宅／家宽节点；不要用负载均衡，同一会话中途换出口 IP 会掉登录态。
+
+## 修改规则
+
+只改 `rules/*.list`，然后重新生成：
+
+```bash
+bash scripts/build.sh
+```
+
+`.list` 和生成出来的文件一起提交。CI 会跑 `bash scripts/build.sh --check`，
+两边不一致就报错。
 
 ## 维护范围
 

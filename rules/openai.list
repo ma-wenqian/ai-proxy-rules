@@ -1,0 +1,31 @@
+# AI Proxy Rules — OpenAI / ChatGPT / Sora
+# RULE-SET for Shadowrocket / Surge / Loon / Stash (no policy on each line)
+# This is the source of truth — Clash/ and Shadowrocket/ are generated from it
+# by scripts/build.sh. Edit here, then run the script.
+# 规则源文件：Clash/ 与 Shadowrocket/ 下的文件都由 scripts/build.sh 从这里生成，
+# 改规则只改这里，然后运行脚本。
+# https://github.com/ma-wenqian/ai-proxy-rules
+
+# Site, API, static assets / 主站、API、静态资源
+DOMAIN-SUFFIX,openai.com
+DOMAIN-SUFFIX,chatgpt.com
+DOMAIN-SUFFIX,oaistatic.com
+DOMAIN-SUFFIX,oaiusercontent.com
+DOMAIN-SUFFIX,sora.com
+DOMAIN-SUFFIX,openai.com.cdn.cloudflare.net
+
+# Object storage & CDN origin / 对象存储与 CDN 回源
+DOMAIN-SUFFIX,openaiapi-site.azureedge.net
+DOMAIN-SUFFIX,openaicom.imgix.net
+DOMAIN,openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net
+DOMAIN,production-openaicom-storage.azureedge.net
+DOMAIN,openaicomproductionae4b.blob.core.windows.net
+
+# Login & CAPTCHA / 登录与人机验证
+DOMAIN,cdn.auth0.com
+DOMAIN,client-api.arkoselabs.com
+DOMAIN,openai-api.arkoselabs.com
+
+# ChatGPT advanced voice, LiveKit hosts are assigned dynamically
+# ChatGPT 高级语音，LiveKit 主机名动态分配
+DOMAIN-SUFFIX,livekit.cloud

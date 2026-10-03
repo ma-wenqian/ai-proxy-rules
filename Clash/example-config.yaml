@@ -51,13 +51,21 @@ rule-providers:
 #    同一会话中途换出口 IP 会掉登录态。
 # ---------------------------------------------------------------
 proxy-groups:
+  # Option A / 方案 A
   - name: AI
     type: select
     proxies:
       - your-node-name-here   # 替换成你自己的节点名
       - DIRECT
 
-  # Only needed for option B / 方案 B 时再加一组
+  # Option B — one group per service (then drop AI above)
+  # 方案 B：每家一个策略组（并删掉上面的 AI）
+  - name: OpenAI
+    type: select
+    proxies:
+      - your-node-name-here   # 替换成你自己的节点名
+      - DIRECT
+
   - name: Claude
     type: select
     proxies:
@@ -75,9 +83,14 @@ rules:
   - RULE-SET,ai-proxy,AI
 
   # Option B — pick one or the other / 方案 B（与上面那条二选一）
-  # - RULE-SET,openai,AI
+  # - RULE-SET,openai,OpenAI
   # - RULE-SET,claude,Claude
 
   # ... your existing rules ... / …… 你原有的其它规则 ……
   - GEOIP,CN,DIRECT
-  - MATCH,AI
+
+  # Keep your own catch-all here. DIRECT keeps this example AI-only — don't
+  # point MATCH at the AI group, or all other traffic will use the AI node.
+  # 这里保留你自己原来的兜底规则。示例用 DIRECT 表示只有 AI 走代理；
+  # 不要写成 MATCH,AI，否则其它所有流量都会挤到 AI 节点上。
+  - MATCH,DIRECT
