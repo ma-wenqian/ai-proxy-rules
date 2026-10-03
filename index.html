@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Proxy Rules</title>
+<meta name="description" content="OpenAI / Claude proxy rules for Clash (mihomo), Shadowrocket, Surge and Loon.">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --surface-2: #f3f1ec;
+    --text: #1d1c1a;
+    --muted: #6b6862;
+    --border: #e4e0d8;
+    --accent: #c4623a;
+    --accent-ink: #ffffff;
+    --code-bg: #f3f1ec;
+    --ok: #2f7a4d;
+    --radius: 10px;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171614;
+      --surface: #1f1e1b;
+      --surface-2: #282622;
+      --text: #ece9e3;
+      --muted: #a29e96;
+      --border: #34312c;
+      --accent: #e07b52;
+      --accent-ink: #1b1a18;
+      --code-bg: #24221f;
+      --ok: #6cc08f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #171614;
+    --surface: #1f1e1b;
+    --surface-2: #282622;
+    --text: #ece9e3;
+    --muted: #a29e96;
+    --border: #34312c;
+    --accent: #e07b52;
+    --accent-ink: #1b1a18;
+    --code-bg: #24221f;
+    --ok: #6cc08f;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.6 var(--sans);
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 18px 0;
+  }
+  .brand { font-weight: 650; letter-spacing: -0.01em; }
+  .top-actions { display: flex; gap: 8px; align-items: center; }
+  .pill-btn {
+    font: inherit; font-size: 13px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; padding: 4px 12px; cursor: pointer; text-decoration: none;
+  }
+  .pill-btn:hover { border-color: var(--muted); }
+
+  .hero {
+    display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center;
+    padding: 48px 0 40px; min-height: min(560px, 78vh);
+  }
+  .eyebrow {
+    display: inline-block; font-size: 12.5px; font-weight: 600; color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    padding: 3px 10px; border-radius: 999px; margin-bottom: 16px;
+  }
+  .hero h1 { font-size: clamp(32px, 5.4vw, 48px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.025em; }
+  .hero p { margin: 0; color: var(--muted); max-width: 46ch; font-size: 17px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .btn-lg { font-size: 15px; padding: 10px 18px; border-radius: 10px; }
+  .clients { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 26px; }
+  .clients span {
+    font-size: 12.5px; color: var(--muted); border: 1px solid var(--border);
+    border-radius: 999px; padding: 2px 10px;
+  }
+
+  .router {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 10px 30px -12px rgba(0,0,0,.18); overflow: hidden; min-width: 0;
+  }
+  .router-head {
+    display: flex; align-items: center; gap: 6px; padding: 10px 14px;
+    border-bottom: 1px solid var(--border); background: var(--surface-2);
+  }
+  .router-head .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); }
+  .router-title { margin-left: 8px; font: 12px var(--mono); color: var(--muted); }
+  .router-rows { list-style: none; margin: 0; padding: 8px 0; font: 13px/1 var(--mono); }
+  .router-rows li {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 9px 16px; transition: background .3s, opacity .3s; opacity: .55;
+  }
+  .router-rows li .host { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .router-rows li.on { background: var(--surface-2); opacity: 1; }
+  .router-rows li.seen { opacity: 1; }
+  .router-rows li .tag { opacity: 0; transform: translateX(-4px); transition: opacity .25s, transform .25s; }
+  .router-rows li.on .tag, .router-rows li.seen .tag { opacity: 1; transform: none; }
+  .tag {
+    font: 600 10.5px/1 var(--mono); font-style: normal; letter-spacing: .04em;
+    padding: 4px 7px; border-radius: 5px; flex: none;
+  }
+  .tag.proxy { color: var(--accent-ink); background: var(--accent); }
+  .tag.direct { color: var(--muted); background: var(--surface-2); border: 1px solid var(--border); }
+  .router-foot {
+    display: flex; gap: 16px; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+
+  .features {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 8px 0 40px;
+  }
+  .feature {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px;
+  }
+  .feature-num { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .feature-num b { color: var(--text); }
+  .feature h3 { font-size: 15px; margin: 6px 0 4px; }
+  .feature p { margin: 0; font-size: 14px; color: var(--muted); }
+
+  section { padding: 28px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 20px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .lead { color: var(--muted); margin: 0 0 18px; }
+
+  .tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 16px;
+    background: var(--surface-2); padding: 4px; border-radius: 12px; width: fit-content; max-width: 100%; }
+  .tab {
+    font: inherit; font-size: 14px; border: 0; background: transparent; color: var(--muted);
+    padding: 6px 14px; border-radius: 8px; cursor: pointer;
+  }
+  .tab[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 12px;
+  }
+  .card h3 { font-size: 15px; margin: 0 0 4px; }
+  .card p { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  .btn {
+    font: inherit; font-size: 14px; font-weight: 550; text-decoration: none;
+    background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent);
+    border-radius: 8px; padding: 7px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn.ghost { background: transparent; color: var(--text); border-color: var(--border); font-weight: 500; }
+  .btn.ghost:hover { border-color: var(--muted); }
+
+  .code {
+    position: relative; background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 8px; margin: 0;
+  }
+  .code pre {
+    margin: 0; padding: 12px 14px; padding-right: 72px; overflow-x: auto;
+    font: 12.5px/1.6 var(--mono); white-space: pre;
+  }
+  .code .copy {
+    position: absolute; top: 8px; right: 8px;
+    font: 12px var(--sans); background: var(--surface); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; cursor: pointer;
+  }
+  .code .copy.done { color: var(--ok); border-color: var(--ok); }
+
+  .note { font-size: 13px; color: var(--muted); margin: 10px 0 0; }
+  .note code, .lead code, .card p code, li code {
+    font-family: var(--mono); font-size: 0.9em; background: var(--code-bg);
+    padding: 1px 5px; border-radius: 4px;
+  }
+
+  .rules-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .search {
+    flex: 1 1 220px; font: inherit; font-size: 14px; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px;
+  }
+  .search:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .group { margin-bottom: 14px; }
+  .group-title { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+  .group-title span { display: block; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font: 12.5px/1 var(--mono); background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 8px; display: inline-flex; gap: 6px; align-items: center;
+    max-width: 100%; overflow-wrap: anywhere;
+  }
+  .chip .kind { color: var(--muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; }
+  .svc-label { font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; margin: 18px 0 10px; }
+  .empty { color: var(--muted); font-size: 14px; }
+
+  ul.tips { margin: 0; padding-left: 20px; }
+  ul.tips li { margin-bottom: 8px; }
+
+  footer { padding: 28px 0 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; gap: 28px; padding: 24px 0 32px; min-height: 0; }
+    .features { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .hero p { font-size: 16px; }
+    .cta .btn { flex: 1 1 100%; justify-content: center; }
+    .card { padding: 14px; }
+    /* Equal columns so every tab stays visible on one row */
+    .tabs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; width: 100%; }
+    .tab { font-size: 13px; padding: 6px 6px; line-height: 1.3; text-align: center; }
+    .router-rows { font-size: 12.5px; }
+    .router-rows li { padding: 9px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">ai-proxy-rules</div>
+    <div class="top-actions">
+      <button class="pill-btn" id="lang-btn" type="button">中文</button>
+      <a class="pill-btn" href="https://github.com/ma-wenqian/ai-proxy-rules">GitHub</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow" data-i18n="eyebrow">For Claude Code, ChatGPT and the APIs</div>
+      <h1 data-i18n="title">Route only AI traffic through your proxy.</h1>
+      <p data-i18n="subtitle">Domain and IP rules for OpenAI and Claude. Everything else stays direct — no global mode needed just to reach api.anthropic.com.</p>
+      <div class="cta">
+        <a class="btn btn-lg" href="#install" data-i18n="ctaInstall">Get the rules</a>
+        <a class="btn btn-lg ghost" href="https://github.com/ma-wenqian/ai-proxy-rules" data-i18n="ctaGithub">View on GitHub</a>
+      </div>
+      <div class="clients" aria-label="Supported clients">
+        <span>Clash</span><span>mihomo</span><span>Shadowrocket</span><span>Surge</span><span>Loon</span><span>Stash</span>
+      </div>
+    </div>
+
+    <div class="router" aria-hidden="true">
+      <div class="router-head">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="router-title">rule match</span>
+      </div>
+      <ol class="router-rows" id="router-rows"></ol>
+      <div class="router-foot">
+        <span><i class="tag proxy">PROXY</i> <span data-i18n="legendProxy">AI node</span></span>
+        <span><i class="tag direct">DIRECT</i> <span data-i18n="legendDirect">no proxy</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-num"><b id="stat-claude">–</b> + <b id="stat-openai">–</b></div>
+      <h3 data-i18n="f1Title">Claude + OpenAI rules</h3>
+      <p data-i18n="f1Text">Web apps, APIs, Claude Code, sandboxes, login and CAPTCHA, plus Anthropic's own IP blocks.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-num"><b>1</b></div>
+      <h3 data-i18n="f2Title">One source, every client</h3>
+      <p data-i18n="f2Text">Rules live in one list; Clash and Shadowrocket files are generated from it and checked in CI.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-num"><b>0</b></div>
+      <h3 data-i18n="f3Title">Servers included</h3>
+      <p data-i18n="f3Text">Rules only. Use your own nodes — pick one, and only AI traffic goes through it.</p>
+    </div>
+  </div>
+
+  <section id="install">
+    <h2 data-i18n="installTitle">Install</h2>
+    <p class="lead" data-i18n="installLead">Pick your client.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="sr" aria-selected="true">Shadowrocket</button>
+      <button class="tab" role="tab" data-tab="ruleset" aria-selected="false">Surge / Loon / Stash</button>
+      <button class="tab" role="tab" data-tab="clash" aria-selected="false">Clash / mihomo</button>
+    </div>
+
+    <div data-panel="sr">
+      <div class="card">
+        <h3 data-i18n="srOwnTitle">Keep your own config — add a RULE-SET</h3>
+        <p data-i18n-html="srOwnText">Add these lines to your config, above <code>FINAL</code>. Replace <code>PROXY</code> with your own policy group if you want a dedicated node.</p>
+        <div class="code"><button class="copy" type="button">Copy</button><pre id="ruleset-sr"></pre></div>
+      </div>
+      <div class="card">
+        <h3 data-i18n="srStandTitle">Or switch to a standalone config</h3>
+        <p data-i18n="srStandText">One tap on your iPhone or iPad imports the config. It contains no servers: PROXY is whichever server is selected in the app, and everything else goes direct.</p>
+        <div class="row" id="sr-buttons"></div>
+      </div>
+    </div>
+
+    <div data-panel="ruleset" hidden>
+      <div class="card">
+        <h3 data-i18n="rsTitle">RULE-SET</h3>
+        <p data-i18n-html="rsText">The same <code>.list</code> files work in Surge, Loon and Stash. Add them above your final rule.</p>
+        <div class="code"><button class="copy" type="button">Copy</button><pre id="ruleset-generic"></pre></div>
+      </div>
+    </div>
+
+    <div data-panel="clash" hidden>
+      <div class="tabs" role="tablist" id="clash-mode">
+        <button class="tab" data-mode="one" aria-selected="true" data-i18n="clashOne">One node for both</button>
+        <button class="tab" data-mode="two" aria-selected="false" data-i18n="clashTwo">Separate nodes</button>
+      </div>
+      <div class="card">
+        <p data-i18n-html="clashText">Merge into your own config. <code>RULE-SET</code> must come <b>before</b> <code>GEOIP,CN</code> and <code>MATCH</code>, and the policy name must be a group that exists in your <code>proxy-groups</code>.</p>
+        <div class="code"><button class="copy" type="button">Copy</button><pre id="clash-snippet"></pre></div>
+        <p class="note" data-i18n-html="clashNote">Full example: <a href="https://github.com/ma-wenqian/ai-proxy-rules/blob/main/Clash/example-config.yaml">Clash/example-config.yaml</a>. On old Clash Premium, drop the <code>format: yaml</code> line.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <h2 data-i18n="rulesTitle">What's covered</h2>
+    <p class="lead" data-i18n="rulesLead">Live from rules/*.list — the single source every other file is generated from.</p>
+    <div class="rules-tools">
+      <input class="search" id="search" type="search" placeholder="Filter, e.g. claude.ai" aria-label="Filter rules">
+    </div>
+    <div id="rules-out"><p class="empty" data-i18n="loading">Loading rules…</p></div>
+  </section>
+
+  <section id="dev">
+    <h2 data-i18n="devTitle">If the web app works but your SDK times out</h2>
+    <ul class="tips">
+      <li data-i18n-html="dev1">Rules only apply to traffic that goes through the proxy client. System-proxy mode usually covers browsers only — <code>curl</code>, Node and Python ignore it.</li>
+      <li data-i18n-html="dev2">Turn on <b>TUN / enhanced mode</b> so every process is captured, or set <code>HTTPS_PROXY=http://127.0.0.1:7890</code> in your shell (this proxies everything).</li>
+      <li data-i18n-html="dev3">Don't match Claude Code with <code>PROCESS-NAME,node</code> — that pulls every Node process through the proxy. Domain rules are more precise.</li>
+      <li data-i18n="dev4">Prefer a residential node and avoid load balancing: both providers are strict about datacenter IPs, and changing exit IP mid-session drops your login.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span data-i18n="footer">Domain lists and configuration notes only — no proxy servers are provided. Use within the law where you live.</span>
+    · <a href="https://github.com/ma-wenqian/ai-proxy-rules/blob/main/LICENSE">MIT</a>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const RAW = "https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/";
+
+  const I18N = {
+    en: {
+      title: "Route only AI traffic through your proxy.",
+      eyebrow: "For Claude Code, ChatGPT and the APIs",
+      subtitle: "Domain and IP rules for OpenAI and Claude. Everything else stays direct — no global mode needed just to reach api.anthropic.com.",
+      ctaInstall: "Get the rules", ctaGithub: "View on GitHub",
+      legendProxy: "AI node", legendDirect: "no proxy",
+      f1Title: "Claude + OpenAI rules",
+      f1Text: "Web apps, APIs, Claude Code, sandboxes, login and CAPTCHA, plus Anthropic's own IP blocks.",
+      f2Title: "One source, every client",
+      f2Text: "Rules live in one list; Clash and Shadowrocket files are generated from it and checked in CI.",
+      f3Title: "Servers included",
+      f3Text: "Rules only. Use your own nodes — pick one, and only AI traffic goes through it.",
+      installTitle: "Install", installLead: "Pick your client.",
+      srOwnTitle: "Keep your own config — add a RULE-SET",
+      srOwnText: "Add these lines to your config, above <code>FINAL</code>. Replace <code>PROXY</code> with your own policy group if you want a dedicated node.",
+      srStandTitle: "Or switch to a standalone config",
+      srStandText: "One tap on your iPhone or iPad imports the config. It contains no servers: PROXY is whichever server is selected in the app, and everything else goes direct.",
+      rsTitle: "RULE-SET",
+      rsText: "The same <code>.list</code> files work in Surge, Loon and Stash. Add them above your final rule.",
+      clashOne: "One node for both", clashTwo: "Separate nodes",
+      clashText: "Merge into your own config. <code>RULE-SET</code> must come <b>before</b> <code>GEOIP,CN</code> and <code>MATCH</code>, and the policy name must be a group that exists in your <code>proxy-groups</code>.",
+      clashNote: "Full example: <a href=\"https://github.com/ma-wenqian/ai-proxy-rules/blob/main/Clash/example-config.yaml\">Clash/example-config.yaml</a>. On old Clash Premium, drop the <code>format: yaml</code> line.",
+      rulesTitle: "What's covered",
+      rulesLead: "Live from rules/*.list — the single source every other file is generated from.",
+      loading: "Loading rules…", noMatch: "No rules match.", loadError: "Couldn't load the rule lists.",
+      search: "Filter, e.g. claude.ai",
+      devTitle: "If the web app works but your SDK times out",
+      dev1: "Rules only apply to traffic that goes through the proxy client. System-proxy mode usually covers browsers only — <code>curl</code>, Node and Python ignore it.",
+      dev2: "Turn on <b>TUN / enhanced mode</b> so every process is captured, or set <code>HTTPS_PROXY=http://127.0.0.1:7890</code> in your shell (this proxies everything).",
+      dev3: "Don't match Claude Code with <code>PROCESS-NAME,node</code> — that pulls every Node process through the proxy. Domain rules are more precise.",
+      dev4: "Prefer a residential node and avoid load balancing: both providers are strict about datacenter IPs, and changing exit IP mid-session drops your login.",
+      footer: "Domain lists and configuration notes only — no proxy servers are provided. Use within the law where you live.",
+      copy: "Copy", copied: "Copied",
+      srBoth: "OpenAI + Claude", srOpenai: "OpenAI only", srClaude: "Claude only",
+      langBtn: "中文",
+    },
+    zh: {
+      title: "只让 AI 流量走代理。",
+      eyebrow: "适用于 Claude Code、ChatGPT 与各家 API",
+      subtitle: "OpenAI 与 Claude 的域名和 IP 分流规则。其余流量保持直连，不用为了连上 api.anthropic.com 而开全局。",
+      ctaInstall: "获取规则", ctaGithub: "在 GitHub 查看",
+      legendProxy: "走 AI 节点", legendDirect: "直连",
+      f1Title: "条 Claude + OpenAI 规则",
+      f1Text: "网页端、API、Claude Code、沙箱、登录与人机验证，外加 Anthropic 自有 IP 段。",
+      f2Title: "份规则源，所有客户端通用",
+      f2Text: "规则只维护一份清单，Clash 和 Shadowrocket 文件都由它生成，CI 自动校验。",
+      f3Title: "个节点",
+      f3Text: "只提供规则，节点用你自己的。选好节点后，只有 AI 流量会经过它。",
+      installTitle: "安装", installLead: "选择你用的客户端。",
+      srOwnTitle: "保留自己的配置：加 RULE-SET",
+      srOwnText: "把下面几行加到你的配置里，放在 <code>FINAL</code> 之前。想给 AI 单独指定节点，把 <code>PROXY</code> 换成你自己的策略组名。",
+      srStandTitle: "或者切换到独立配置",
+      srStandText: "在 iPhone / iPad 上点一下即可导入。配置里不含节点：PROXY 指 App 里当前选中的节点，其余流量全部直连。",
+      rsTitle: "RULE-SET",
+      rsText: "同一份 <code>.list</code> 文件在 Surge、Loon、Stash 里都能用，放在兜底规则之前即可。",
+      clashOne: "两家共用一个节点", clashTwo: "两家分开走",
+      clashText: "合并进你自己的配置。<code>RULE-SET</code> 必须放在 <code>GEOIP,CN</code> 和 <code>MATCH</code> <b>之前</b>，策略组名必须是 <code>proxy-groups</code> 里真实存在的名字。",
+      clashNote: "完整示例见 <a href=\"https://github.com/ma-wenqian/ai-proxy-rules/blob/main/Clash/example-config.yaml\">Clash/example-config.yaml</a>。老版本 Clash Premium 删掉 <code>format: yaml</code> 这一行。",
+      rulesTitle: "覆盖范围",
+      rulesLead: "实时读取 rules/*.list，其它所有规则文件都从这里生成。",
+      loading: "正在加载规则…", noMatch: "没有匹配的规则。", loadError: "规则清单加载失败。",
+      search: "筛选，例如 claude.ai",
+      devTitle: "网页能开、SDK 却超时？",
+      dev1: "规则只对经过代理软件的流量生效。「系统代理」模式通常只影响浏览器，<code>curl</code>、Node、Python 默认不读。",
+      dev2: "打开 <b>TUN / 增强模式</b> 接管所有进程，或者在终端设置 <code>HTTPS_PROXY=http://127.0.0.1:7890</code>（这是全量代理）。",
+      dev3: "不要用 <code>PROCESS-NAME,node</code> 匹配 Claude Code，会把所有 Node 进程都拽进代理，按域名分流更精确。",
+      dev4: "建议用住宅 / 家宽节点，不要用负载均衡：两家对机房 IP 风控都很严，会话中途换出口 IP 会掉登录。",
+      footer: "本站只提供域名清单和配置说明，不提供任何代理节点。请在所在地法律允许的范围内使用。",
+      copy: "复制", copied: "已复制",
+      srBoth: "OpenAI + Claude", srOpenai: "只要 OpenAI", srClaude: "只要 Claude",
+      langBtn: "English",
+    },
+  };
+
+  let lang = null;
+  try { lang = localStorage.getItem("lang"); } catch (e) {}
+  if (lang !== "en" && lang !== "zh") {
+    lang = (navigator.language || "").toLowerCase().startsWith("zh") ? "zh" : "en";
+  }
+  const t = (k) => I18N[lang][k] ?? I18N.en[k];
+
+  // ---- static snippets ----
+  const rulesetLines = (policy) =>
+    ["openai", "claude"].map((n) => `RULE-SET,${RAW}rules/${n}.list,${policy}`).join("\n");
+
+  const provider = (name) => `  ${name}:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: "${RAW}Clash/${name}.yaml"
+    path: ./ruleset/${name}.yaml`;
+
+  const clashSnippets = {
+    one: `rule-providers:
+${provider("ai-proxy")}
+
+rules:
+  - RULE-SET,ai-proxy,AI      # AI = your own proxy group`,
+    two: `rule-providers:
+${provider("openai")}
+${provider("claude")}
+
+rules:
+  - RULE-SET,openai,OpenAI
+  - RULE-SET,claude,Claude`,
+  };
+  let clashMode = "one";
+
+  function renderStatic() {
+    document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+    document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-html]").forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
+    document.getElementById("lang-btn").textContent = t("langBtn");
+    document.getElementById("search").placeholder = t("search");
+    document.querySelectorAll(".copy").forEach((b) => { if (!b.classList.contains("done")) b.textContent = t("copy"); });
+
+    document.getElementById("ruleset-sr").textContent = rulesetLines("PROXY");
+    document.getElementById("ruleset-generic").textContent = rulesetLines("PROXY");
+    document.getElementById("clash-snippet").textContent = clashSnippets[clashMode];
+
+    const sr = document.getElementById("sr-buttons");
+    sr.innerHTML = "";
+    [["ai-proxy", "srBoth", true], ["openai", "srOpenai"], ["claude", "srClaude"]].forEach(([file, key, primary]) => {
+      const a = document.createElement("a");
+      a.className = primary ? "btn" : "btn ghost";
+      a.href = `shadowrocket://config/add/${RAW}Shadowrocket/${file}.conf`;
+      a.textContent = t(key);
+      sr.appendChild(a);
+    });
+  }
+
+  // ---- tabs ----
+  document.querySelectorAll('[role="tablist"]:not(#clash-mode) .tab').forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tab.parentElement.querySelectorAll(".tab").forEach((x) => x.setAttribute("aria-selected", x === tab));
+      document.querySelectorAll("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== tab.dataset.tab; });
+    });
+  });
+  document.querySelectorAll("#clash-mode .tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      clashMode = tab.dataset.mode;
+      tab.parentElement.querySelectorAll(".tab").forEach((x) => x.setAttribute("aria-selected", x === tab));
+      document.getElementById("clash-snippet").textContent = clashSnippets[clashMode];
+    });
+  });
+
+  // ---- copy ----
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".copy");
+    if (!btn) return;
+    const text = btn.parentElement.querySelector("pre").textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      const ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch (e2) {}
+      ta.remove();
+    }
+    btn.textContent = t("copied"); btn.classList.add("done");
+    setTimeout(() => { btn.textContent = t("copy"); btn.classList.remove("done"); }, 1500);
+  });
+
+  // ---- language ----
+  document.getElementById("lang-btn").addEventListener("click", () => {
+    lang = lang === "en" ? "zh" : "en";
+    try { localStorage.setItem("lang", lang); } catch (e) {}
+    renderStatic();
+    renderRules();
+  });
+
+  // ---- rules ----
+  // A .list file: header comments up to the first blank line, then groups of
+  // comment lines followed by rule lines, separated by blank lines.
+  function parseList(text) {
+    const blocks = text.replace(/\r/g, "").split(/\n\s*\n/).slice(1);
+    return blocks.map((b) => {
+      const lines = b.split("\n").filter(Boolean);
+      return {
+        notes: lines.filter((l) => l.startsWith("#")).map((l) => l.replace(/^#\s?/, "")),
+        rules: lines.filter((l) => !l.startsWith("#")).map((l) => {
+          const [kind, value] = l.split(",");
+          return { kind, value };
+        }),
+      };
+    }).filter((g) => g.rules.length);
+  }
+
+  async function fetchList(name) {
+    for (const url of [`rules/${name}.list`, `${RAW}rules/${name}.list`]) {
+      try {
+        const r = await fetch(url, { cache: "no-cache" });
+        if (r.ok) return await r.text();
+      } catch (e) {}
+    }
+    throw new Error(name);
+  }
+
+  // Pick the comment lines for the current language: bilingual "EN / 中文"
+  // lines are split; pure-CJK lines show in zh, pure-Latin lines in en.
+  const hasCJK = (s) => /[㐀-鿿]/.test(s);
+  function notesFor(notes) {
+    const out = [];
+    for (const n of notes) {
+      const parts = n.split(" / ");
+      if (parts.length === 2 && hasCJK(parts[1]) && !hasCJK(parts[0])) {
+        out.push(lang === "zh" ? parts[1] : parts[0]);
+      } else if (hasCJK(n) === (lang === "zh")) {
+        out.push(n);
+      }
+    }
+    return out.length ? out : notes;
+  }
+
+  let data = null;
+  function renderRules() {
+    const out = document.getElementById("rules-out");
+    if (!data) return;
+    const q = document.getElementById("search").value.trim().toLowerCase();
+    out.innerHTML = "";
+    let shown = 0;
+    for (const [svc, groups] of data) {
+      const matched = groups
+        .map((g) => ({ ...g, rules: g.rules.filter((r) => !q || r.value.toLowerCase().includes(q) || g.notes.join(" ").toLowerCase().includes(q)) }))
+        .filter((g) => g.rules.length);
+      if (!matched.length) continue;
+      const label = document.createElement("div");
+      label.className = "svc-label"; label.textContent = svc;
+      out.appendChild(label);
+      for (const g of matched) {
+        const box = document.createElement("div"); box.className = "group";
+        const title = document.createElement("div"); title.className = "group-title";
+        notesFor(g.notes).forEach((n) => { const s = document.createElement("span"); s.textContent = n; title.appendChild(s); });
+        const chips = document.createElement("div"); chips.className = "chips";
+        for (const r of g.rules) {
+          const c = document.createElement("span"); c.className = "chip";
+          const k = document.createElement("span"); k.className = "kind";
+          k.textContent = r.kind.replace("DOMAIN-SUFFIX", "suffix").replace("DOMAIN", "exact").replace("IP-CIDR6", "ipv6").replace("IP-CIDR", "ipv4");
+          const v = document.createElement("span"); v.textContent = r.value;
+          c.append(k, v); chips.appendChild(c); shown++;
+        }
+        box.append(title, chips); out.appendChild(box);
+      }
+    }
+    if (!shown) out.innerHTML = `<p class="empty">${t("noMatch")}</p>`;
+  }
+
+  document.getElementById("search").addEventListener("input", renderRules);
+
+  // ---- hero: rule-match demo ----
+  const DEMO_HOSTS = ["api.anthropic.com", "github.com", "claude.ai", "registry.npmjs.org", "chatgpt.com", "www.bilibili.com"];
+  // Fallback until the real lists load; then matchHost() decides.
+  const DEMO_FALLBACK = { "api.anthropic.com": true, "claude.ai": true, "chatgpt.com": true };
+  let domainRules = null;
+
+  function matchHost(host) {
+    if (!domainRules) return !!DEMO_FALLBACK[host];
+    return domainRules.some(({ kind, value }) =>
+      (kind === "DOMAIN" && host === value) ||
+      (kind === "DOMAIN-SUFFIX" && (host === value || host.endsWith("." + value))));
+  }
+
+  const rowsEl = document.getElementById("router-rows");
+  function buildDemo() {
+    rowsEl.innerHTML = "";
+    for (const host of DEMO_HOSTS) {
+      const li = document.createElement("li");
+      const h = document.createElement("span"); h.className = "host"; h.textContent = host;
+      const proxied = matchHost(host);
+      const tag = document.createElement("i"); tag.className = "tag " + (proxied ? "proxy" : "direct");
+      tag.textContent = proxied ? "PROXY" : "DIRECT";
+      li.append(h, tag); rowsEl.appendChild(li);
+    }
+  }
+  buildDemo();
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion) {
+    rowsEl.querySelectorAll("li").forEach((li) => li.classList.add("seen"));
+  } else {
+    let step = 0;
+    setInterval(() => {
+      const rows = rowsEl.querySelectorAll("li");
+      const i = step % (rows.length + 2); // two idle beats with everything shown, then restart
+      rows.forEach((li, j) => {
+        li.classList.toggle("on", j === i);
+        li.classList.toggle("seen", j < i || i >= rows.length);
+      });
+      step++;
+    }, 900);
+  }
+
+  renderStatic();
+  Promise.all([fetchList("claude"), fetchList("openai")]).then(([c, o]) => {
+    const claude = parseList(c), openai = parseList(o);
+    const count = (gs) => gs.reduce((n, g) => n + g.rules.length, 0);
+    document.getElementById("stat-claude").textContent = count(claude);
+    document.getElementById("stat-openai").textContent = count(openai);
+    data = [["Anthropic / Claude", claude], ["OpenAI", openai]];
+    domainRules = [...claude, ...openai].flatMap((g) => g.rules);
+    buildDemo();
+    renderRules();
+  }).catch(() => {
+    document.getElementById("rules-out").innerHTML = `<p class="empty">${t("loadError")}</p>`;
+  });
+})();
+</script>
+</body>
+</html>

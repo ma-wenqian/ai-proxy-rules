@@ -1,6 +1,8 @@
 # ai-proxy-rules
 
-Proxy rules for **OpenAI** and **Claude**, for Clash (mihomo) and Shadowrocket.
+Proxy rules for **OpenAI** and **Claude**, for Clash (mihomo), Shadowrocket, Surge and Loon.
+
+**Website: <https://ma-wenqian.github.io/ai-proxy-rules/>** — one-tap Shadowrocket install, copy-ready snippets, searchable rule list.
 
 English | [中文](#中文说明)
 
@@ -56,23 +58,25 @@ Replace `PROXY` with a policy group of your own if you want a dedicated node.
 
 ## Shadowrocket — standalone config
 
-Tap one of the install links **on the iOS device** and Shadowrocket will import
-the config automatically. If the link doesn't open, copy the URL below it and
-add it by hand: Shadowrocket → **Config** → **+** → paste the URL.
+**On the iOS device**, open the [website](https://ma-wenqian.github.io/ai-proxy-rules/#install)
+and tap an install button — Shadowrocket imports the config automatically.
+(GitHub strips `shadowrocket://` links, so one-tap install lives on the site.)
+Or copy a URL below and add it by hand: Shadowrocket → **Config** → **+** →
+paste the URL.
 
-**OpenAI + Claude** — [install](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf)
+**OpenAI + Claude**
 
 ```
 https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf
 ```
 
-**OpenAI only** — [install](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf)
+**OpenAI only**
 
 ```
 https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf
 ```
 
-**Claude only** — [install](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf)
+**Claude only**
 
 ```
 https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf
@@ -215,8 +219,10 @@ you live.
 
 [English](#ai-proxy-rules) | 中文
 
-面向开发者的 OpenAI / Claude 分流规则，覆盖 Clash（mihomo）与 Shadowrocket。
+面向开发者的 OpenAI / Claude 分流规则，覆盖 Clash（mihomo）、Shadowrocket、Surge、Loon。
 只让 AI 相关的域名走代理，其余流量保持原样——不用为了跑通 `api.anthropic.com` 而开全局。
+
+**网站：<https://ma-wenqian.github.io/ai-proxy-rules/>** —— Shadowrocket 一键安装、可直接复制的配置片段、可搜索的规则清单。
 
 ## 覆盖范围
 
@@ -263,22 +269,23 @@ RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/
 
 ## Shadowrocket —— 独立配置
 
-**在 iOS 设备上**点击「一键安装」，Shadowrocket 会自动跳转并导入配置。
-如果链接打不开，复制下面的地址手动添加：Shadowrocket →**配置**→ 右上角 **+** → 粘贴地址。
+**在 iOS 设备上**打开[网站](https://ma-wenqian.github.io/ai-proxy-rules/#install)点「一键安装」，
+Shadowrocket 会自动跳转并导入配置（GitHub 会屏蔽 `shadowrocket://` 链接，所以一键安装放在网站上）。
+也可以复制下面的地址手动添加：Shadowrocket →**配置**→ 右上角 **+** → 粘贴地址。
 
-**OpenAI + Claude** —— [一键安装](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf)
+**OpenAI + Claude**
 
 ```
 https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/ai-proxy.conf
 ```
 
-**只要 OpenAI** —— [一键安装](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf)
+**只要 OpenAI**
 
 ```
 https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/openai.conf
 ```
 
-**只要 Claude** —— [一键安装](shadowrocket://config/add/https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf)
+**只要 Claude**
 
 ```
 https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf
