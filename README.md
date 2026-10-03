@@ -14,7 +14,7 @@ you don't have to turn on global mode just to reach `api.anthropic.com`.
 | Service | What's included |
 | --- | --- |
 | **OpenAI** | ChatGPT web & desktop, `api.openai.com`, platform console, Sora, login + Arkose CAPTCHA, advanced voice (LiveKit) |
-| **Anthropic** | Claude web app, `api.anthropic.com` (Claude Code / SDKs), console, Artifacts sandbox and file uploads |
+| **Anthropic** | Claude web app, `api.anthropic.com` (Claude Code / SDKs), console, Artifacts / MCP Apps sandboxes, file uploads, `clau.de` short links, `claude.dev`, Anthropic IP blocks (AS399358) |
 
 Every entry is commented with what it's for — see [Clash/ai-proxy.yaml](Clash/ai-proxy.yaml).
 
@@ -194,7 +194,7 @@ you live.
 | 服务 | 包含内容 |
 | --- | --- |
 | **OpenAI** | ChatGPT 网页与桌面端、`api.openai.com`、platform 控制台、Sora、登录与 Arkose 人机验证、高级语音（LiveKit） |
-| **Anthropic** | Claude 网页端、`api.anthropic.com`（Claude Code / SDK）、console 控制台、Artifacts 沙箱与文件上传 |
+| **Anthropic** | Claude 网页端、`api.anthropic.com`（Claude Code / SDK）、console 控制台、Artifacts / MCP Apps 沙箱、文件上传、`clau.de` 短链、`claude.dev`、Anthropic 自有 IP 段（AS399358） |
 
 每条规则都带用途注释，域名清单见 [Clash/ai-proxy.yaml](Clash/ai-proxy.yaml)。
 
