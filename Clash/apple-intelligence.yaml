@@ -1,0 +1,31 @@
+# AI Proxy Rules — Apple Intelligence / Siri / Relay
+# Clash / mihomo rule-provider, behavior: classical
+#
+# Generated from rules/*.list by scripts/build.sh — do not edit by hand.
+# 由 scripts/build.sh 从 rules/*.list 生成，请勿手改。
+# https://github.com/ma-wenqian/ai-proxy-rules
+
+payload:
+  # Siri / Apple Intelligence backend / Siri 与 Apple Intelligence 后端
+  - DOMAIN,guzzoni.apple.com
+  - DOMAIN-SUFFIX,smoot.apple.com
+  - DOMAIN-KEYWORD,siri
+
+  # Relay / Private Relay (mask) / 中继
+  - DOMAIN,mask-api.fe.apple-dns.net
+  - DOMAIN,mask-api.icloud.com
+  - DOMAIN,mask-t.apple-dns.net
+  - DOMAIN,mask.apple-dns.net
+  - DOMAIN-SUFFIX,apple-relay.apple.com
+  - DOMAIN-SUFFIX,apple-relay.cloudflare.com
+  - DOMAIN-SUFFIX,apple-relay.fastly-edge.com
+  - DOMAIN-SUFFIX,apple-relay.mask.apple-dns.net
+  - DOMAIN-SUFFIX,cp4.cloudflare.com
+  - DOMAIN-SUFFIX,mask-h2.icloud.com
+  - DOMAIN-SUFFIX,mask.icloud.com
+
+  # Location, iCloud gateway, App Store assets / 定位、iCloud 网关、App Store 资源
+  - DOMAIN-SUFFIX,gspe1-ssl.ls.apple.com
+  - DOMAIN-SUFFIX,ls.apple.com
+  - DOMAIN-SUFFIX,gateway.icloud.com
+  - DOMAIN-SUFFIX,apps.mzstatic.com

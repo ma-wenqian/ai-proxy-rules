@@ -1,0 +1,33 @@
+# AI Proxy Rules — Apple Intelligence / Siri / Private Relay
+# RULE-SET for Shadowrocket / Surge / Loon / Stash (no policy on each line)
+# This is the source of truth — Clash/ and Shadowrocket/ are generated from it
+# by scripts/build.sh. Edit here, then run the script.
+# 规则源文件：Clash/ 与 Shadowrocket/ 下的文件都由 scripts/build.sh 从这里生成，
+# 改规则只改这里，然后运行脚本。
+# Route these to a node in an Apple-Intelligence-supported region (e.g. US).
+# 请指向 Apple Intelligence 支持地区的节点（如美国）。
+# https://github.com/ma-wenqian/ai-proxy-rules
+
+# Siri / Apple Intelligence backend / Siri 与 Apple Intelligence 后端
+DOMAIN,guzzoni.apple.com
+DOMAIN-SUFFIX,smoot.apple.com
+DOMAIN-KEYWORD,siri
+
+# Relay / Private Relay (mask) / 中继
+DOMAIN,mask-api.fe.apple-dns.net
+DOMAIN,mask-api.icloud.com
+DOMAIN,mask-t.apple-dns.net
+DOMAIN,mask.apple-dns.net
+DOMAIN-SUFFIX,apple-relay.apple.com
+DOMAIN-SUFFIX,apple-relay.cloudflare.com
+DOMAIN-SUFFIX,apple-relay.fastly-edge.com
+DOMAIN-SUFFIX,apple-relay.mask.apple-dns.net
+DOMAIN-SUFFIX,cp4.cloudflare.com
+DOMAIN-SUFFIX,mask-h2.icloud.com
+DOMAIN-SUFFIX,mask.icloud.com
+
+# Location, iCloud gateway, App Store assets / 定位、iCloud 网关、App Store 资源
+DOMAIN-SUFFIX,gspe1-ssl.ls.apple.com
+DOMAIN-SUFFIX,ls.apple.com
+DOMAIN-SUFFIX,gateway.icloud.com
+DOMAIN-SUFFIX,apps.mzstatic.com

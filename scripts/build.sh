@@ -106,17 +106,19 @@ COMBINED_NOTE="# Use this single file when both services share the same node; us
 # openai.yaml 与 claude.yaml"
 
 body rules/openai.list | write_clash openai.yaml "OpenAI / ChatGPT / Sora" ""
+body rules/apple-intelligence.list | write_clash apple-intelligence.yaml "Apple Intelligence / Siri / Relay" ""
 body rules/claude.list | write_clash claude.yaml "Anthropic / Claude / Claude Code" ""
 combined_body | write_clash ai-proxy.yaml "OpenAI + Claude" "$COMBINED_NOTE"
 
 body rules/openai.list | write_shadowrocket openai.conf "OpenAI only" "OpenAI" "OpenAI"
 body rules/claude.list | write_shadowrocket claude.conf "Claude only" "Anthropic" "Anthropic"
+body rules/apple-intelligence.list | write_shadowrocket apple-intelligence.conf "Apple Intelligence only" "Apple Intelligence" "Apple Intelligence"
 combined_body | write_shadowrocket ai-proxy.conf "OpenAI + Claude" "AI" "AI"
 
 if [[ "$out_dir" != "." ]]; then
   status=0
-  for f in Clash/openai.yaml Clash/claude.yaml Clash/ai-proxy.yaml \
-           Shadowrocket/openai.conf Shadowrocket/claude.conf Shadowrocket/ai-proxy.conf; do
+  for f in Clash/openai.yaml Clash/claude.yaml Clash/apple-intelligence.yaml Clash/ai-proxy.yaml \
+           Shadowrocket/openai.conf Shadowrocket/claude.conf Shadowrocket/apple-intelligence.conf Shadowrocket/ai-proxy.conf; do
     if ! diff -u "$f" "$out_dir/$f"; then
       status=1
     fi
