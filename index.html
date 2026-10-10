@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Proxy Rules</title>
-<meta name="description" content="OpenAI / Claude proxy rules for Clash (mihomo), Shadowrocket, Surge and Loon.">
+<meta name="description" content="OpenAI / Claude / Apple Intelligence proxy rules for Clash (mihomo), Shadowrocket, Surge and Loon.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
@@ -244,7 +244,7 @@
     <div class="hero-copy">
       <div class="eyebrow" data-i18n="eyebrow">For Claude Code, ChatGPT and the APIs</div>
       <h1 data-i18n="title">Route only AI traffic through your proxy.</h1>
-      <p data-i18n="subtitle">Domain and IP rules for OpenAI and Claude. Everything else stays direct — no global mode needed just to reach api.anthropic.com.</p>
+      <p data-i18n="subtitle">Domain and IP rules for OpenAI, Claude and Apple Intelligence. Everything else stays direct — no global mode needed just to reach api.anthropic.com.</p>
       <div class="cta">
         <a class="btn btn-lg" href="#install" data-i18n="ctaInstall">Get the rules</a>
         <a class="btn btn-lg ghost" href="https://github.com/ma-wenqian/ai-proxy-rules" data-i18n="ctaGithub">View on GitHub</a>
@@ -269,8 +269,8 @@
 
   <div class="features">
     <div class="feature">
-      <div class="feature-num"><b id="stat-claude">–</b> + <b id="stat-openai">–</b></div>
-      <h3 data-i18n="f1Title">Claude + OpenAI rules</h3>
+      <div class="feature-num"><b id="stat-claude">–</b> + <b id="stat-openai">–</b> + <b id="stat-apple">–</b></div>
+      <h3 data-i18n="f1Title">Claude + OpenAI + Apple Intelligence rules</h3>
       <p data-i18n="f1Text">Web apps, APIs, Claude Code, sandboxes, login and CAPTCHA, plus Anthropic's own IP blocks.</p>
     </div>
     <div class="feature">
@@ -300,6 +300,8 @@
         <h3 data-i18n="srOwnTitle">Keep your own config — add a RULE-SET</h3>
         <p data-i18n-html="srOwnText">Add these lines to your config, above <code>FINAL</code>. Replace <code>PROXY</code> with your own policy group if you want a dedicated node.</p>
         <div class="code"><button class="copy" type="button">Copy</button><pre id="ruleset-sr"></pre></div>
+        <p class="note" data-i18n-html="appleText">Apple Intelligence is a separate rule set: point it at a node in a supported region (e.g. US) and place it <b>above</b> any rule that sends apple.com / iCloud direct.</p>
+        <div class="code"><button class="copy" type="button">Copy</button><pre id="ruleset-apple-sr"></pre></div>
       </div>
       <div class="card">
         <h3 data-i18n="srStandTitle">Or switch to a standalone config</h3>
@@ -313,6 +315,8 @@
         <h3 data-i18n="rsTitle">RULE-SET</h3>
         <p data-i18n-html="rsText">The same <code>.list</code> files work in Surge, Loon and Stash. Add them above your final rule.</p>
         <div class="code"><button class="copy" type="button">Copy</button><pre id="ruleset-generic"></pre></div>
+        <p class="note" data-i18n-html="appleText2">Apple Intelligence is separate — use a supported-region (e.g. US) policy and put it above any direct apple.com / iCloud rule.</p>
+        <div class="code"><button class="copy" type="button">Copy</button><pre id="ruleset-apple-generic"></pre></div>
       </div>
     </div>
 
@@ -320,6 +324,7 @@
       <div class="tabs" role="tablist" id="clash-mode">
         <button class="tab" data-mode="one" aria-selected="true" data-i18n="clashOne">One node for both</button>
         <button class="tab" data-mode="two" aria-selected="false" data-i18n="clashTwo">Separate nodes</button>
+        <button class="tab" data-mode="apple" aria-selected="false" data-i18n="clashApple">Apple Intelligence</button>
       </div>
       <div class="card">
         <p data-i18n-html="clashText">Merge into your own config. <code>RULE-SET</code> must come <b>before</b> <code>GEOIP,CN</code> and <code>MATCH</code>, and the policy name must be a group that exists in your <code>proxy-groups</code>.</p>
@@ -362,11 +367,11 @@
     en: {
       title: "Route only AI traffic through your proxy.",
       eyebrow: "For Claude Code, ChatGPT and the APIs",
-      subtitle: "Domain and IP rules for OpenAI and Claude. Everything else stays direct — no global mode needed just to reach api.anthropic.com.",
+      subtitle: "Domain and IP rules for OpenAI, Claude and Apple Intelligence. Everything else stays direct — no global mode needed just to reach api.anthropic.com.",
       ctaInstall: "Get the rules", ctaGithub: "View on GitHub",
       legendProxy: "AI node", legendDirect: "no proxy",
-      f1Title: "Claude + OpenAI rules",
-      f1Text: "Web apps, APIs, Claude Code, sandboxes, login and CAPTCHA, plus Anthropic's own IP blocks.",
+      f1Title: "Claude + OpenAI + Apple Intelligence rules",
+      f1Text: "Web apps, APIs, Claude Code, sandboxes, login and CAPTCHA, Anthropic's own IP blocks, plus Siri / Apple Intelligence and Private Relay.",
       f2Title: "One source, every client",
       f2Text: "Rules live in one list; Clash and Shadowrocket files are generated from it and checked in CI.",
       f3Title: "Servers included",
@@ -392,17 +397,20 @@
       dev4: "Prefer a residential node and avoid load balancing: both providers are strict about datacenter IPs, and changing exit IP mid-session drops your login.",
       footer: "Domain lists and configuration notes only — no proxy servers are provided. Use within the law where you live.",
       copy: "Copy", copied: "Copied",
-      srBoth: "OpenAI + Claude", srOpenai: "OpenAI only", srClaude: "Claude only",
+      appleText: "Apple Intelligence is a separate rule set: point it at a node in a supported region (e.g. US) and place it <b>above</b> any rule that sends apple.com / iCloud direct.",
+      appleText2: "Apple Intelligence is separate — use a supported-region (e.g. US) policy and put it above any direct apple.com / iCloud rule.",
+      clashApple: "Apple Intelligence",
+      srBoth: "OpenAI + Claude", srOpenai: "OpenAI only", srClaude: "Claude only", srApple: "Apple Intelligence only",
       langBtn: "中文",
     },
     zh: {
       title: "只让 AI 流量走代理。",
       eyebrow: "适用于 Claude Code、ChatGPT 与各家 API",
-      subtitle: "OpenAI 与 Claude 的域名和 IP 分流规则。其余流量保持直连，不用为了连上 api.anthropic.com 而开全局。",
+      subtitle: "OpenAI、Claude 与 Apple Intelligence 的域名和 IP 分流规则。其余流量保持直连，不用为了连上 api.anthropic.com 而开全局。",
       ctaInstall: "获取规则", ctaGithub: "在 GitHub 查看",
       legendProxy: "走 AI 节点", legendDirect: "直连",
-      f1Title: "条 Claude + OpenAI 规则",
-      f1Text: "网页端、API、Claude Code、沙箱、登录与人机验证，外加 Anthropic 自有 IP 段。",
+      f1Title: "条 Claude + OpenAI + Apple Intelligence 规则",
+      f1Text: "网页端、API、Claude Code、沙箱、登录与人机验证，外加 Anthropic 自有 IP 段，以及 Siri / Apple Intelligence 与 Private Relay。",
       f2Title: "份规则源，所有客户端通用",
       f2Text: "规则只维护一份清单，Clash 和 Shadowrocket 文件都由它生成，CI 自动校验。",
       f3Title: "个节点",
@@ -428,7 +436,10 @@
       dev4: "建议用住宅 / 家宽节点，不要用负载均衡：两家对机房 IP 风控都很严，会话中途换出口 IP 会掉登录。",
       footer: "本站只提供域名清单和配置说明，不提供任何代理节点。请在所在地法律允许的范围内使用。",
       copy: "复制", copied: "已复制",
-      srBoth: "OpenAI + Claude", srOpenai: "只要 OpenAI", srClaude: "只要 Claude",
+      appleText: "Apple Intelligence 是独立规则集：请指向支持地区（如美国）的节点，并放在所有把 apple.com / iCloud 直连的规则<b>之前</b>。",
+      appleText2: "Apple Intelligence 单独使用：策略指向支持地区（如美国）的节点，并放在 apple.com / iCloud 直连规则之前。",
+      clashApple: "Apple Intelligence",
+      srBoth: "OpenAI + Claude", srOpenai: "只要 OpenAI", srClaude: "只要 Claude", srApple: "只要 Apple Intelligence",
       langBtn: "English",
     },
   };
@@ -443,6 +454,8 @@
   // ---- static snippets ----
   const rulesetLines = (policy) =>
     ["openai", "claude"].map((n) => `RULE-SET,${RAW}rules/${n}.list,${policy}`).join("\n");
+
+  const appleLine = (policy) => `RULE-SET,${RAW}rules/apple-intelligence.list,${policy}`;
 
   const provider = (name) => `  ${name}:
     type: http
@@ -465,6 +478,11 @@ ${provider("claude")}
 rules:
   - RULE-SET,openai,OpenAI
   - RULE-SET,claude,Claude`,
+    apple: `rule-providers:
+${provider("apple-intelligence")}
+
+rules:
+  - RULE-SET,apple-intelligence,AppleIntelligence   # a US node group; above any apple / icloud rule`,
   };
   let clashMode = "one";
 
@@ -478,11 +496,13 @@ rules:
 
     document.getElementById("ruleset-sr").textContent = rulesetLines("PROXY");
     document.getElementById("ruleset-generic").textContent = rulesetLines("PROXY");
+    document.getElementById("ruleset-apple-sr").textContent = appleLine("US");
+    document.getElementById("ruleset-apple-generic").textContent = appleLine("US");
     document.getElementById("clash-snippet").textContent = clashSnippets[clashMode];
 
     const sr = document.getElementById("sr-buttons");
     sr.innerHTML = "";
-    [["ai-proxy", "srBoth", true], ["openai", "srOpenai"], ["claude", "srClaude"]].forEach(([file, key, primary]) => {
+    [["ai-proxy", "srBoth", true], ["openai", "srOpenai"], ["claude", "srClaude"], ["apple-intelligence", "srApple"]].forEach(([file, key, primary]) => {
       const a = document.createElement("a");
       a.className = primary ? "btn" : "btn ghost";
       a.href = `shadowrocket://config/add/${RAW}Shadowrocket/${file}.conf`;
@@ -597,7 +617,7 @@ rules:
         for (const r of g.rules) {
           const c = document.createElement("span"); c.className = "chip";
           const k = document.createElement("span"); k.className = "kind";
-          k.textContent = r.kind.replace("DOMAIN-SUFFIX", "suffix").replace("DOMAIN", "exact").replace("IP-CIDR6", "ipv6").replace("IP-CIDR", "ipv4");
+          k.textContent = r.kind.replace("DOMAIN-KEYWORD", "keyword").replace("DOMAIN-SUFFIX", "suffix").replace("DOMAIN", "exact").replace("IP-CIDR6", "ipv6").replace("IP-CIDR", "ipv4");
           const v = document.createElement("span"); v.textContent = r.value;
           c.append(k, v); chips.appendChild(c); shown++;
         }
@@ -610,9 +630,9 @@ rules:
   document.getElementById("search").addEventListener("input", renderRules);
 
   // ---- hero: rule-match demo ----
-  const DEMO_HOSTS = ["api.anthropic.com", "github.com", "claude.ai", "registry.npmjs.org", "chatgpt.com", "www.bilibili.com"];
+  const DEMO_HOSTS = ["api.anthropic.com", "github.com", "claude.ai", "registry.npmjs.org", "chatgpt.com", "guzzoni.apple.com", "www.bilibili.com"];
   // Fallback until the real lists load; then matchHost() decides.
-  const DEMO_FALLBACK = { "api.anthropic.com": true, "claude.ai": true, "chatgpt.com": true };
+  const DEMO_FALLBACK = { "api.anthropic.com": true, "claude.ai": true, "chatgpt.com": true, "guzzoni.apple.com": true };
   let domainRules = null;
 
   function matchHost(host) {
@@ -653,13 +673,14 @@ rules:
   }
 
   renderStatic();
-  Promise.all([fetchList("claude"), fetchList("openai")]).then(([c, o]) => {
-    const claude = parseList(c), openai = parseList(o);
+  Promise.all([fetchList("claude"), fetchList("openai"), fetchList("apple-intelligence")]).then(([c, o, a]) => {
+    const claude = parseList(c), openai = parseList(o), apple = parseList(a);
     const count = (gs) => gs.reduce((n, g) => n + g.rules.length, 0);
     document.getElementById("stat-claude").textContent = count(claude);
     document.getElementById("stat-openai").textContent = count(openai);
-    data = [["Anthropic / Claude", claude], ["OpenAI", openai]];
-    domainRules = [...claude, ...openai].flatMap((g) => g.rules);
+    document.getElementById("stat-apple").textContent = count(apple);
+    data = [["Anthropic / Claude", claude], ["OpenAI", openai], ["Apple Intelligence", apple]];
+    domainRules = [...claude, ...openai, ...apple].flatMap((g) => g.rules);
     buildDemo();
     renderRules();
   }).catch(() => {

@@ -1,6 +1,6 @@
 # ai-proxy-rules
 
-Proxy rules for **OpenAI** and **Claude**, for Clash (mihomo), Shadowrocket, Surge and Loon.
+Proxy rules for **OpenAI**, **Claude** and **Apple Intelligence**, for Clash (mihomo), Shadowrocket, Surge and Loon.
 
 **Website: <https://ma-wenqian.github.io/ai-proxy-rules/>** — one-tap Shadowrocket install, copy-ready snippets, searchable rule list.
 
@@ -17,9 +17,10 @@ you don't have to turn on global mode just to reach `api.anthropic.com`.
 | --- | --- |
 | **OpenAI** | ChatGPT web & desktop, `api.openai.com`, platform console, Sora, login + Arkose CAPTCHA, advanced voice (LiveKit) |
 | **Anthropic** | Claude web app, `api.anthropic.com` (Claude Code / SDKs), console, Artifacts / MCP Apps sandboxes, file uploads, `clau.de` short links, `claude.dev`, Anthropic IP blocks (AS399358) |
+| **Apple Intelligence** | Siri / Apple Intelligence backend (`guzzoni.apple.com`, `smoot.apple.com`, `siri` keyword), Private Relay (`mask*`, `apple-relay`), location (`ls.apple.com`), iCloud gateway, App Store assets. Needs a node in a supported region (e.g. US). Standalone — not part of `ai-proxy` |
 
-Every entry is commented with what it's for — see [rules/claude.list](rules/claude.list)
-and [rules/openai.list](rules/openai.list).
+Every entry is commented with what it's for — see [rules/claude.list](rules/claude.list),
+[rules/openai.list](rules/openai.list) and [rules/apple-intelligence.list](rules/apple-intelligence.list).
 
 ## Layout
 
@@ -27,15 +28,18 @@ and [rules/openai.list](rules/openai.list).
 rules/                  # source of truth, edited by hand
   openai.list           # also usable directly as a RULE-SET
   claude.list
+  apple-intelligence.list
 Clash/                  # generated, except example-config.yaml
   ai-proxy.yaml         # OpenAI + Claude, one node for both
   openai.yaml           # OpenAI only
   claude.yaml           # Claude only
+  apple-intelligence.yaml  # Apple Intelligence only (not in ai-proxy)
   example-config.yaml   # how to wire it up: rule-providers / proxy-groups / rules
 Shadowrocket/           # generated
   ai-proxy.conf         # OpenAI + Claude
   openai.conf           # OpenAI only
   claude.conf           # Claude only
+  apple-intelligence.conf  # Apple Intelligence only (not in ai-proxy)
 scripts/build.sh        # rules/*.list -> Clash/ + Shadowrocket/
 ```
 
@@ -52,6 +56,14 @@ switching configs. Put these lines above your `FINAL` rule:
 ```
 RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/openai.list,PROXY
 RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/claude.list,PROXY
+```
+
+Apple Intelligence is a separate rule set — send it to a node in a supported
+region (e.g. US), and put it **before** any rule that sends `apple.com` / iCloud
+domains direct:
+
+```
+RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/apple-intelligence.list,US
 ```
 
 Replace `PROXY` with a policy group of your own if you want a dedicated node.
@@ -80,6 +92,12 @@ https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/op
 
 ```
 https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf
+```
+
+**Apple Intelligence only**
+
+```
+https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/apple-intelligence.conf
 ```
 
 **These configs contain no servers.** Servers live in Shadowrocket's own list,
@@ -133,10 +151,27 @@ rules:
   - RULE-SET,claude,Claude
 ```
 
+**Apple Intelligence** (always its own provider; point it at a US node group):
+
+```yaml
+rule-providers:
+  apple-intelligence:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Clash/apple-intelligence.yaml"
+    path: ./ruleset/apple-intelligence.yaml
+
+rules:
+  - RULE-SET,apple-intelligence,AppleIntelligence   # before any apple / icloud rule
+```
+
 Three things to watch:
 
 - `RULE-SET` must come **before** catch-alls like `GEOIP,CN,DIRECT` or `MATCH`,
-  otherwise it will never be reached.
+  otherwise it will never be reached. Apple Intelligence also has to sit above
+  any `apple` / `icloud` direct rules, which overlap with its domains.
 - The policy name (`AI` / `OpenAI` / `Claude` above) has to match a group that
   actually exists in your `proxy-groups`, or the config will fail to load.
 - `format: yaml` is a mihomo field; drop that line on older Clash Premium.
@@ -193,7 +228,7 @@ Commit the `.list` change together with the regenerated files. CI runs
 
 ## Scope
 
-Currently OpenAI and Anthropic only. More services may be added later. Intended
+Currently OpenAI, Anthropic and Apple Intelligence. More services may be added later. Intended
 as a reference for developers in regions where these services aren't directly
 reachable.
 
@@ -219,7 +254,7 @@ you live.
 
 [English](#ai-proxy-rules) | 中文
 
-面向开发者的 OpenAI / Claude 分流规则，覆盖 Clash（mihomo）、Shadowrocket、Surge、Loon。
+面向开发者的 OpenAI / Claude / Apple Intelligence 分流规则，覆盖 Clash（mihomo）、Shadowrocket、Surge、Loon。
 只让 AI 相关的域名走代理，其余流量保持原样——不用为了跑通 `api.anthropic.com` 而开全局。
 
 **网站：<https://ma-wenqian.github.io/ai-proxy-rules/>** —— Shadowrocket 一键安装、可直接复制的配置片段、可搜索的规则清单。
@@ -230,9 +265,10 @@ you live.
 | --- | --- |
 | **OpenAI** | ChatGPT 网页与桌面端、`api.openai.com`、platform 控制台、Sora、登录与 Arkose 人机验证、高级语音（LiveKit） |
 | **Anthropic** | Claude 网页端、`api.anthropic.com`（Claude Code / SDK）、console 控制台、Artifacts / MCP Apps 沙箱、文件上传、`clau.de` 短链、`claude.dev`、Anthropic 自有 IP 段（AS399358） |
+| **Apple Intelligence** | Siri / Apple Intelligence 后端（`guzzoni.apple.com`、`smoot.apple.com`、`siri` 关键字）、Private Relay（`mask*`、`apple-relay`）、定位（`ls.apple.com`）、iCloud 网关、App Store 资源。需要走支持地区（如美国）的节点；独立规则集，不包含在 `ai-proxy` 里 |
 
-每条规则都带用途注释，域名清单见 [rules/claude.list](rules/claude.list) 与
-[rules/openai.list](rules/openai.list)。
+每条规则都带用途注释，域名清单见 [rules/claude.list](rules/claude.list)、
+[rules/openai.list](rules/openai.list) 与 [rules/apple-intelligence.list](rules/apple-intelligence.list)。
 
 ## 目录结构
 
@@ -240,15 +276,18 @@ you live.
 rules/                  # 规则源文件，只手改这里
   openai.list           # 也可直接作为 RULE-SET 使用
   claude.list
+  apple-intelligence.list
 Clash/                  # 脚本生成（example-config.yaml 除外）
   ai-proxy.yaml         # OpenAI + Claude 合集，两家共用一个节点时用这个
   openai.yaml           # 仅 OpenAI
   claude.yaml           # 仅 Claude
+  apple-intelligence.yaml  # 仅 Apple Intelligence（不在 ai-proxy 里）
   example-config.yaml   # 接入示例：rule-providers / proxy-groups / rules
 Shadowrocket/           # 脚本生成
   ai-proxy.conf         # OpenAI + Claude 合集
   openai.conf           # 仅 OpenAI
   claude.conf           # 仅 Claude
+  apple-intelligence.conf  # 仅 Apple Intelligence（不在 ai-proxy 里）
 scripts/build.sh        # rules/*.list -> Clash/ + Shadowrocket/
 ```
 
@@ -263,6 +302,13 @@ scripts/build.sh        # rules/*.list -> Clash/ + Shadowrocket/
 ```
 RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/openai.list,PROXY
 RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/claude.list,PROXY
+```
+
+Apple Intelligence 是独立规则集，要指向支持地区（如美国）的节点，并且放在
+所有把 `apple.com` / iCloud 直连的规则**之前**：
+
+```
+RULE-SET,https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/rules/apple-intelligence.list,US
 ```
 
 想给 AI 单独指定节点，把 `PROXY` 换成你自己的策略组名。
@@ -289,6 +335,12 @@ https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/op
 
 ```
 https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/claude.conf
+```
+
+**只要 Apple Intelligence**
+
+```
+https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Shadowrocket/apple-intelligence.conf
 ```
 
 **配置里不含任何节点。** 节点在 Shadowrocket 自己的服务器列表里，`PROXY` 表示当前选中的那个，
@@ -339,9 +391,25 @@ rules:
   - RULE-SET,claude,Claude
 ```
 
+**Apple Intelligence**（始终单独一个 provider，指向美国节点组）：
+
+```yaml
+rule-providers:
+  apple-intelligence:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    url: "https://raw.githubusercontent.com/ma-wenqian/ai-proxy-rules/main/Clash/apple-intelligence.yaml"
+    path: ./ruleset/apple-intelligence.yaml
+
+rules:
+  - RULE-SET,apple-intelligence,AppleIntelligence   # 放在 apple / icloud 规则之前
+```
+
 三个要点：
 
-- `RULE-SET` 必须放在 `GEOIP,CN,DIRECT`、`MATCH` 这类兜底规则**之前**，否则永远命中不到。
+- `RULE-SET` 必须放在 `GEOIP,CN,DIRECT`、`MATCH` 这类兜底规则**之前**，否则永远命中不到。Apple Intelligence 还要放在 `apple` / `icloud` 直连规则之上，域名有重叠。
 - 策略组名（上面的 `AI` / `OpenAI` / `Claude`）必须是 `proxy-groups` 里真实存在的名字，
   写错会导致配置加载失败。
 - `format: yaml` 是 mihomo 的字段，老版本 Clash Premium 删掉该行即可。
@@ -393,7 +461,7 @@ bash scripts/build.sh
 
 ## 维护范围
 
-目前只维护 OpenAI 和 Anthropic 两家，其他服务后续再补。本仓库可供相关地区的开发者参考。
+目前只维护 OpenAI、Anthropic 和 Apple Intelligence，其他服务后续再补。本仓库可供相关地区的开发者参考。
 
 ## 致谢
 
