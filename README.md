@@ -41,6 +41,7 @@ Shadowrocket/           # generated
   claude.conf           # Claude only
   apple-intelligence.conf  # Apple Intelligence only (not in ai-proxy)
 scripts/build.sh        # rules/*.list -> Clash/ + Shadowrocket/
+docs/                   # website (VitePress), published to GitHub Pages
 ```
 
 `rules/*.list` are RULE-SET files for Shadowrocket, Surge, Loon and Stash.
@@ -289,6 +290,7 @@ Shadowrocket/           # 脚本生成
   claude.conf           # 仅 Claude
   apple-intelligence.conf  # 仅 Apple Intelligence（不在 ai-proxy 里）
 scripts/build.sh        # rules/*.list -> Clash/ + Shadowrocket/
+docs/                   # 网站（VitePress），发布到 GitHub Pages
 ```
 
 `rules/*.list` 是 Shadowrocket、Surge、Loon、Stash 通用的 RULE-SET 文件；
