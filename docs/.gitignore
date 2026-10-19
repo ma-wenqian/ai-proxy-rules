@@ -1,0 +1,7 @@
+node_modules/
+.vitepress/cache/
+.vitepress/dist/
+# 构建时从仓库根拷进来,保证 github.io 上的旧路径不变
+public/rules/
+public/Clash/
+public/Shadowrocket/

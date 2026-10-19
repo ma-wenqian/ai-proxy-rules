@@ -1,0 +1,90 @@
+/* 沿用旧单页的暖色调:米白底 + 赭橙强调色 */
+:root {
+  --vp-c-bg: #fbfaf7;
+  --vp-c-bg-alt: #f3f1ec;
+  --vp-c-bg-soft: #f3f1ec;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-divider: #e4e0d8;
+  --vp-c-gutter: #e4e0d8;
+  --vp-c-text-1: #1d1c1a;
+  --vp-c-text-2: #6b6862;
+  --vp-c-brand-1: #c4623a;
+  --vp-c-brand-2: #b4552f;
+  --vp-c-brand-3: #c4623a;
+  --vp-c-brand-soft: rgba(196, 98, 58, 0.12);
+  --vp-button-brand-text: #ffffff;
+  --vp-home-hero-name-color: var(--vp-c-text-1);
+  --apr-surface: #ffffff;
+  --apr-ok: #2f7a4d;
+  --apr-accent-ink: #ffffff;
+}
+
+.dark {
+  --vp-c-bg: #171614;
+  --vp-c-bg-alt: #1f1e1b;
+  --vp-c-bg-soft: #282622;
+  --vp-c-bg-elv: #1f1e1b;
+  --vp-c-divider: #34312c;
+  --vp-c-gutter: #34312c;
+  --vp-c-text-1: #ece9e3;
+  --vp-c-text-2: #a29e96;
+  --vp-c-brand-1: #e07b52;
+  --vp-c-brand-2: #e88d68;
+  --vp-c-brand-3: #e07b52;
+  --vp-c-brand-soft: rgba(224, 123, 82, 0.16);
+  --vp-button-brand-text: #1b1a18;
+  --apr-surface: #1f1e1b;
+  --apr-ok: #6cc08f;
+  --apr-accent-ink: #1b1a18;
+}
+
+/* 首页标题:项目名小一号,主标语做主角,和旧页一样 */
+.VPHome .VPHero .name {
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--vp-c-text-2);
+}
+.VPHome .VPHero .text {
+  letter-spacing: -0.025em;
+}
+
+/* hero 右侧放的是规则匹配卡片,不是图片:去掉 VitePress 给图片位的固定尺寸和负边距 */
+.VPHero .image-container {
+  width: 100%;
+  height: auto;
+  transform: none;
+  display: flex;
+  justify-content: center;
+}
+.VPHero .image {
+  margin: 0;
+}
+@media (max-width: 959px) {
+  /* 手机 / 平板:卡片排到文字和按钮下面,和旧单页一样 */
+  .VPHero .image {
+    order: 2;
+    margin: 36px 0 0;
+  }
+}
+@media (min-width: 960px) {
+  .VPHero .image-container {
+    justify-content: flex-end;
+  }
+}
+
+/* 首页正文区:宽度与 hero 对齐 */
+.VPHome .vp-doc.container {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+@media (min-width: 960px) {
+  .VPHome .vp-doc.container {
+    padding: 0 64px 64px;
+  }
+}
+.VPHome .vp-doc h2 {
+  margin-top: 40px;
+}

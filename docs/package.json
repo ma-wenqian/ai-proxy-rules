@@ -1,0 +1,14 @@
+{
+  "name": "ai-proxy-rules-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "copy-rules": "node scripts/copy-rules.mjs",
+    "dev": "npm run copy-rules && vitepress dev --port 8772",
+    "build": "npm run copy-rules && vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.3"
+  }
+}
