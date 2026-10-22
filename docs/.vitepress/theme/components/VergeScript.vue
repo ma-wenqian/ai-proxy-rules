@@ -53,7 +53,8 @@ function main(config, profileName) {
   const providers = { ...(config["proxy-providers"] || {}) };
   for (const s of SUBS) {
     if (!s.url.startsWith("https://")) continue;
-    const group = groups.find((g) => g.name === s.group);
+    // 先按全名找;组名改过措辞时退回按开头的 emoji 找(emoji 不变)
+    const group = groups.find((g) => g.name === s.group) || groups.find((g) => [...g.name][0] === [...s.group][0]);
     if (!group) continue; // 当前订阅里没有这个组:跳过,别让整份配置加载失败
     providers[s.name] = {
       type: "http",
