@@ -10,8 +10,8 @@ The groups and rules in such a subscription are [Clash/template.yaml](https://gi
 | Group | Options | Default | Traffic |
 | --- | --- | --- | --- |
 | `♻️ 节点` (nodes) | every node in the subscription | first node | **Claude, OpenAI, `claude.exe` — always proxied** (no DIRECT in this group) |
-| `🧱 大陆无法访问（默认直连）` (blocked in mainland China) | DIRECT / `♻️ 节点` / subscriptions you add | DIRECT | Google, YouTube, Telegram, blocked sites, non-CN TLDs |
-| `🏠 其他流量（默认直连）` (everything else) | DIRECT / `🧱 大陆无法访问` | DIRECT | whatever matched nothing above |
+| `🌍 大陆境外网站（香港选直连，大陆选节点）` (sites outside mainland China) | DIRECT / `♻️ 节点` / subscriptions you add | DIRECT | Google, YouTube, Telegram, blocked sites, non-CN TLDs |
+| `🏠 其他流量（默认直连，香港建议直连）` (everything else) | DIRECT / `🌍 大陆境外网站` | DIRECT | whatever matched nothing above |
 
 Mainland China sites, LAN and Apple / iCloud always go direct.
 

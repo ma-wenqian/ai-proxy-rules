@@ -9,9 +9,9 @@
 #
 # Defaults: only Claude / OpenAI go through a node (♻️ 节点 has no DIRECT, so they
 # are always proxied); everything else goes direct until you pick something in
-# 🧱 大陆无法访问. Guide: https://ma-wenqian.github.io/ai-proxy-rules/zh/guide/clash-verge
+# 🌍 大陆境外网站. Guide: https://ma-wenqian.github.io/ai-proxy-rules/zh/guide/clash-verge
 # 默认只有 Claude / OpenAI 走节点（♻️ 节点 组里没有 DIRECT = 永远代理），其他一律直连，
-# 需要时在 🧱 大陆无法访问 里选节点或自己的 VPN。
+# 需要时在 🌍 大陆境外网站 里选节点或自己的 VPN。
 #
 # Rule-providers download directly from jsDelivr (no node needed at first start).
 # No ad-block list on purpose: at 5.5 MB it makes phone clients time out on import.
@@ -23,17 +23,17 @@ proxy-groups:
     type: select
     include-all-proxies: true
 
-  - name: 🧱 大陆无法访问（默认直连）
+  - name: 🌍 大陆境外网站（香港选直连，大陆选节点）
     type: select
     proxies:
       - DIRECT
       - ♻️ 节点
 
-  - name: 🏠 其他流量（默认直连）
+  - name: 🏠 其他流量（默认直连，香港建议直连）
     type: select
     proxies:
       - DIRECT
-      - 🧱 大陆无法访问（默认直连）
+      - 🌍 大陆境外网站（香港选直连，大陆选节点）
 
 rule-providers:
   ai-claude:
@@ -107,14 +107,14 @@ rules:
   - PROCESS-NAME,claude.exe,♻️ 节点
   - RULE-SET,ai-claude,♻️ 节点
   - RULE-SET,ai-openai,♻️ 节点
-  - DOMAIN-SUFFIX,bing.com,🧱 大陆无法访问（默认直连）
+  - DOMAIN-SUFFIX,bing.com,🌍 大陆境外网站（香港选直连，大陆选节点）
   - RULE-SET,applications,DIRECT
   - RULE-SET,private,DIRECT
   - RULE-SET,icloud,DIRECT
   - RULE-SET,apple,DIRECT
-  - RULE-SET,google,🧱 大陆无法访问（默认直连）
-  - RULE-SET,tld-not-cn,🧱 大陆无法访问（默认直连）
-  - RULE-SET,gfw,🧱 大陆无法访问（默认直连）
-  - RULE-SET,telegramcidr,🧱 大陆无法访问（默认直连）
-  - RULE-SET,proxy,🧱 大陆无法访问（默认直连）
-  - MATCH,🏠 其他流量（默认直连）
+  - RULE-SET,google,🌍 大陆境外网站（香港选直连，大陆选节点）
+  - RULE-SET,tld-not-cn,🌍 大陆境外网站（香港选直连，大陆选节点）
+  - RULE-SET,gfw,🌍 大陆境外网站（香港选直连，大陆选节点）
+  - RULE-SET,telegramcidr,🌍 大陆境外网站（香港选直连，大陆选节点）
+  - RULE-SET,proxy,🌍 大陆境外网站（香港选直连，大陆选节点）
+  - MATCH,🏠 其他流量（默认直连，香港建议直连）

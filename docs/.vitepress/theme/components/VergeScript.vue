@@ -4,20 +4,20 @@
 import { computed, reactive, ref } from 'vue'
 import { useData } from 'vitepress'
 
-const OTHER = '🧱 大陆无法访问（默认直连）'
+const OTHER = '🌍 大陆境外网站（香港选直连，大陆选节点）'
 const NODES = '♻️ 节点'
 
 const TEXT = {
   en: {
     name: 'Name', url: 'https://your-subscription-link', group: 'Joins group',
-    other: `${OTHER} — sites blocked in mainland China`, nodes: `${NODES} — Claude / OpenAI`,
+    other: `${OTHER} — sites outside mainland China`, nodes: `${NODES} — Claude / OpenAI`,
     add: '+ Add another subscription', remove: 'Remove',
     copy: 'Copy script', copied: 'Copied', empty: '// fill in a subscription link above',
     privacy: 'The script is built in this page only. Your links are not sent anywhere.',
   },
   zh: {
     name: '名字', url: 'https://你的订阅链接', group: '加入哪个组',
-    other: `${OTHER}：大陆打不开的网站`, nodes: `${NODES}：Claude / OpenAI`,
+    other: `${OTHER}：大陆境外网站`, nodes: `${NODES}：Claude / OpenAI`,
     add: '+ 再加一个订阅', remove: '删除',
     copy: '复制脚本', copied: '已复制', empty: '// 在上面填上订阅链接',
     privacy: '脚本只在这个页面里生成，你填的链接不会发送到任何地方。',
