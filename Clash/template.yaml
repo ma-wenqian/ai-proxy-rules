@@ -1,0 +1,120 @@
+# Full routing template for a 3x-ui / mihomo subscription
+# 3x-ui 订阅「Clash 路由规则」/ mihomo 完整分流模板
+#
+# Groups, rule sets and rules only — no proxies. Nodes come from the subscription
+# (3x-ui pastes this into every /clash subscription, Settings → Subscription → Clash →
+# Global routing rules), or from your own proxy-providers.
+# 只有分组、规则集和规则，没有节点。节点来自订阅：3x-ui 面板把它贴进每个人的 /clash
+# 订阅（设置 → 订阅 → Clash → 全局路由规则）；自己用 mihomo 时配 proxy-providers。
+#
+# Defaults: only Claude / OpenAI go through a node (♻️ 节点 has no DIRECT, so they
+# are always proxied); everything else goes direct until you pick something in
+# 🌐 其他代理. Guide: https://ma-wenqian.github.io/ai-proxy-rules/zh/guide/clash-verge
+# 默认只有 Claude / OpenAI 走节点（♻️ 节点 组里没有 DIRECT = 永远代理），其他一律直连，
+# 需要时在 🌐 其他代理 里选节点或自己的 VPN。
+#
+# Rule-providers download directly from jsDelivr (no node needed at first start).
+# No ad-block list on purpose: at 5.5 MB it makes phone clients time out on import.
+# 规则集从 jsDelivr 直接下载（首次启动不依赖节点）。刻意没有广告拦截列表：5.5 MB，
+# 手机客户端导入订阅时会超时。
+
+proxy-groups:
+  - name: ♻️ 节点
+    type: select
+    include-all-proxies: true
+
+  - name: 🌐 其他代理（默认直连）
+    type: select
+    proxies:
+      - DIRECT
+      - ♻️ 节点
+
+  - name: 🏠 其他流量（默认直连）
+    type: select
+    proxies:
+      - DIRECT
+      - 🌐 其他代理（默认直连）
+
+rule-providers:
+  ai-claude:
+    type: http
+    behavior: classical
+    url: "https://cdn.jsdelivr.net/gh/ma-wenqian/ai-proxy-rules@main/Clash/claude.yaml"
+    path: ./ruleset/ai-claude.yaml
+    interval: 86400
+  ai-openai:
+    type: http
+    behavior: classical
+    url: "https://cdn.jsdelivr.net/gh/ma-wenqian/ai-proxy-rules@main/Clash/openai.yaml"
+    path: ./ruleset/ai-openai.yaml
+    interval: 86400
+  icloud:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt"
+    path: ./ruleset/icloud.yaml
+    interval: 86400
+  apple:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt"
+    path: ./ruleset/apple.yaml
+    interval: 86400
+  google:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
+    path: ./ruleset/google.yaml
+    interval: 86400
+  proxy:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
+    path: ./ruleset/proxy.yaml
+    interval: 86400
+  private:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt"
+    path: ./ruleset/private.yaml
+    interval: 86400
+  gfw:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt"
+    path: ./ruleset/gfw.yaml
+    interval: 86400
+  tld-not-cn:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt"
+    path: ./ruleset/tld-not-cn.yaml
+    interval: 86400
+  telegramcidr:
+    type: http
+    behavior: ipcidr
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt"
+    path: ./ruleset/telegramcidr.yaml
+    interval: 86400
+  applications:
+    type: http
+    behavior: classical
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt"
+    path: ./ruleset/applications.yaml
+    interval: 86400
+rules:
+  - DOMAIN,api64.ipify.org,DIRECT
+  - PROCESS-NAME,claude.exe,♻️ 节点
+  - RULE-SET,ai-claude,♻️ 节点
+  - RULE-SET,ai-openai,♻️ 节点
+  - DOMAIN-SUFFIX,bing.com,🌐 其他代理（默认直连）
+  - RULE-SET,applications,DIRECT
+  - RULE-SET,private,DIRECT
+  - RULE-SET,icloud,DIRECT
+  - RULE-SET,apple,DIRECT
+  - RULE-SET,google,🌐 其他代理（默认直连）
+  - RULE-SET,tld-not-cn,🌐 其他代理（默认直连）
+  - RULE-SET,gfw,🌐 其他代理（默认直连）
+  - RULE-SET,telegramcidr,🌐 其他代理（默认直连）
+  - RULE-SET,proxy,🌐 其他代理（默认直连）
+  - MATCH,🏠 其他流量（默认直连）

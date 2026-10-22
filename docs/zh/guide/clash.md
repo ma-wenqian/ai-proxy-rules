@@ -1,5 +1,7 @@
 # Clash / mihomo
 
+想要一份带好全部分流的完整配置（Clash Verge 导入即用、还能叠加自己的订阅），看 [Clash Verge 完整配置](./clash-verge)。
+
 在自己的配置里加两段，完整示例见 [Clash/example-config.yaml](https://github.com/ma-wenqian/ai-proxy-rules/blob/main/Clash/example-config.yaml)。
 
 `Clash/*.yaml` 是 `behavior: classical` 的 rule-provider 文件（`payload:` 列表），合并进你现有的配置使用。

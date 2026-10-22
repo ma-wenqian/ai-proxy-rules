@@ -8,6 +8,7 @@ import RouterDemo from './components/RouterDemo.vue'
 import HomeStats from './components/HomeStats.vue'
 import InstallTabs from './components/InstallTabs.vue'
 import RuleBrowser from './components/RuleBrowser.vue'
+import VergeScript from './components/VergeScript.vue'
 
 export default {
   extends: DefaultTheme,
@@ -22,6 +23,7 @@ export default {
     app.component('HomeStats', HomeStats)
     app.component('InstallTabs', InstallTabs)
     app.component('RuleBrowser', RuleBrowser)
+    app.component('VergeScript', VergeScript)
     // 记住最近看的语言,配合 config.mts 里根路径的自动跳转
     if (typeof window !== 'undefined') {
       router.onAfterRouteChange = (to) => {

@@ -1,5 +1,7 @@
 # Clash / mihomo
 
+Want a complete routing config instead (import into Clash Verge and go, with your own subscriptions on top)? See [Clash Verge full config](./clash-verge).
+
 Add two sections to your own config. Full example: [Clash/example-config.yaml](https://github.com/ma-wenqian/ai-proxy-rules/blob/main/Clash/example-config.yaml).
 
 `Clash/*.yaml` are `behavior: classical` rule-provider files (a `payload:` list), meant to be merged into your existing config.

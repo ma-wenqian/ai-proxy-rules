@@ -10,6 +10,7 @@ const enSidebar = [
       { text: 'RULE-SET (Shadowrocket / Surge / Loon / Stash)', link: '/guide/rule-set' },
       { text: 'Shadowrocket standalone config', link: '/guide/shadowrocket' },
       { text: 'Clash / mihomo', link: '/guide/clash' },
+      { text: 'Clash Verge full config', link: '/guide/clash-verge' },
     ],
   },
   {
@@ -29,6 +30,7 @@ const zhSidebar = [
       { text: 'RULE-SET（Shadowrocket / Surge / Loon / Stash）', link: '/zh/guide/rule-set' },
       { text: 'Shadowrocket 独立配置', link: '/zh/guide/shadowrocket' },
       { text: 'Clash / mihomo', link: '/zh/guide/clash' },
+      { text: 'Clash Verge 完整配置', link: '/zh/guide/clash-verge' },
     ],
   },
   {

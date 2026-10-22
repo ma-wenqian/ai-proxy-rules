@@ -29,12 +29,13 @@ rules/                  # source of truth, edited by hand
   openai.list           # also usable directly as a RULE-SET
   claude.list
   apple-intelligence.list
-Clash/                  # generated, except example-config.yaml
+Clash/                  # generated, except example-config.yaml and template.yaml
   ai-proxy.yaml         # OpenAI + Claude, one node for both
   openai.yaml           # OpenAI only
   claude.yaml           # Claude only
   apple-intelligence.yaml  # Apple Intelligence only (not in ai-proxy)
   example-config.yaml   # how to wire it up: rule-providers / proxy-groups / rules
+  template.yaml         # full routing (groups + rules, no nodes); guide: docs/guide/clash-verge.md
 Shadowrocket/           # generated
   ai-proxy.conf         # OpenAI + Claude
   openai.conf           # OpenAI only
@@ -278,12 +279,13 @@ rules/                  # 规则源文件，只手改这里
   openai.list           # 也可直接作为 RULE-SET 使用
   claude.list
   apple-intelligence.list
-Clash/                  # 脚本生成（example-config.yaml 除外）
+Clash/                  # 脚本生成（example-config.yaml、template.yaml 除外）
   ai-proxy.yaml         # OpenAI + Claude 合集，两家共用一个节点时用这个
   openai.yaml           # 仅 OpenAI
   claude.yaml           # 仅 Claude
   apple-intelligence.yaml  # 仅 Apple Intelligence（不在 ai-proxy 里）
   example-config.yaml   # 接入示例：rule-providers / proxy-groups / rules
+  template.yaml         # 完整分流（分组 + 规则，不含节点）；说明见 docs/zh/guide/clash-verge.md
 Shadowrocket/           # 脚本生成
   ai-proxy.conf         # OpenAI + Claude 合集
   openai.conf           # 仅 OpenAI
